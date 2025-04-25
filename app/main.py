@@ -4,4 +4,4 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {"message": "Job board is running!"}
+    return {"message": "Job board is updated!"}
