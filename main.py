@@ -1,11 +1,19 @@
 from fastapi import FastAPI
 from app.models.person import Person
+import mysql.connector
+
+db = mysql.connector.connect(
+    host="localhost", user="mistin", password="Creedforce!@3", database="users"
+)
 
 app = FastAPI()
 
 
 @app.get("/")
 def read_root():
+    mycurser = db.cursor()
+    mycurser.execute("SHOW DATABASES")
+
     person = Person(
         email="mistin@abv.bg",
         password="test",
@@ -17,4 +25,7 @@ def read_root():
         education="basic",
         skills="None",
     )
-    return person
+    list = []
+    for database in mycurser:
+        list.append(database)
+    return list
