@@ -2,6 +2,7 @@ from app.models.user import User
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String,ForeignKey
 from sqlalchemy.orm import declarative_base
+from app.constants import Account_type
 
 Base = declarative_base()
 
@@ -16,11 +17,12 @@ class Person(Base):
     phone_number = Column(String)
     education = Column(String)
     skills = Column(String)
-    account_type = Column(String)
+    account_type = Column(SQLEnum(AccountType), nullable=False)
 
 class PersonCreate(User):
     education:str
     skills:str
+    account_type:Account_type = Account_type.PERSON
 
     class Config:
         from_attributes = True 

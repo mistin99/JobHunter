@@ -3,7 +3,6 @@ from app.models.person import Person,PersonCreate
 
 def create_person(db: Session, person_create: PersonCreate):
     person = Person(**person_create.model_dump())
-    person.account_type="Person"
     db.add(person)
     db.commit()
     db.refresh(person)
