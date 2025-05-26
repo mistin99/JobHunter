@@ -1,24 +1,70 @@
-from fastapi import APIRouter, Depends
+from typing import cast
+from urllib.parse import unquote
+
+from fastapi import APIRouter, Depends, HTTPException
+from jose import JWTError, jwt
 from sqlalchemy.orm import Session
-from app.models.person import PersonCreate
-from app.models.postal_address import PostalAddressCreate
-from app.models.organization import OrganizationCreate
-from app.crud.person import create_person
+
+from app.constants import Account_status
+from app.core.config import settings
 from app.crud.organization import create_org
+from app.crud.person import create_person
 from app.crud.postal_address import create_postal_address
 from app.database import get_db
+from app.models.organization import OrganizationCreate
+from app.models.person import Person, PersonCreate
+from app.models.postal_address import PostalAddressCreate
 
 router = APIRouter()
 
-@router.post("/register/person")
-def register(person:PersonCreate,address:PostalAddressCreate, db: Session = Depends(get_db)):
-        user_db = create_person(db=db, person_create=person) 
-        postal_address_db = create_postal_address(db=db, address_create=address, user_id=user_db.id,owner_type=user_db.account_type)
-        return {"message": f"User registered successfully"}
 
-    
+@router.post("/register/person")
+def register_person(
+    person: PersonCreate, address: PostalAddressCreate, db: Session = Depends(get_db)
+):
+    user_db = create_person(db=db, person=person)
+    create_postal_address(
+        db=db,
+        address=address,
+        user_id= user_db.id,
+        owner_type=user_db.account_type,
+    )
+    return {"message": "Email has been sent for verification"}
+
+
 @router.post("/register/organization")
-def register(organization:OrganizationCreate,address:PostalAddressCreate,db:Session = Depends(get_db)):
-    organization_db = create_org(db=db, organization_create=organization) 
-    postal_address_db = create_postal_address(db=db, address_create=address, user_id=organization_db.id,owner_type=organization_db.account_type)
-    return {"message": f"User registered successfully"}
+def register(
+    organization: OrganizationCreate,
+    address: PostalAddressCreate,
+    db: Session = Depends(get_db),
+):
+    organization_db = create_org(db=db, organization=organization)
+    create_postal_address(
+        db=db,
+        address=address,
+        user_id=organization_db.id,
+        owner_type=organization_db.account_type,
+    )
+    return {"message": "Email has been sent for verification"}
+
+@router.get("/verify-email")
+def verify_email(token: str, db: Session = Depends(get_db)):
+    #decoded_token = unquote(token)
+    try:
+        print(f"---------------------{token}")
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        print(f"---------------------{payload}")
+        user_id = payload.get("sub")
+        print(f"---------------------{user_id}")
+        if payload.get("type") != "email_verification":
+            raise HTTPException(status_code=400, detail="Invalid token type")
+    except JWTError:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+
+    user = db.query(Person).filter(Person.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user.status = Account_status.VERIFIED
+    db.commit()
+    return {"message": "Email verified successfully"}
