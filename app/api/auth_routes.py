@@ -1,5 +1,3 @@
-from typing import cast
-from urllib.parse import unquote
 
 from fastapi import APIRouter, Depends, HTTPException
 from jose import JWTError, jwt
@@ -49,7 +47,6 @@ def register(
 
 @router.get("/verify-email")
 def verify_email(token: str, db: Session = Depends(get_db)):
-    #decoded_token = unquote(token)
     try:
         print(f"---------------------{token}")
         payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
