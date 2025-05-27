@@ -5,8 +5,6 @@ from jose import jwt
 
 from app.core.config import settings
 
-SECRET_KEY = "your_secret_key"
-ALGORITHM = "HS256"
 
 def create_verification_token(user_id: int) -> str:
     expire = datetime.now(timezone.utc) + timedelta(hours=24)
