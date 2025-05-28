@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.models.postal_address import PostalAddress, PostalAddressCreate
+from models.postal_address import PostalAddress, PostalAddressCreate
 
 
 def create_postal_address(

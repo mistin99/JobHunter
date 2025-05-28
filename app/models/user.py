@@ -2,7 +2,7 @@ from abc import ABC
 from pydantic import BaseModel,EmailStr,field_validator
 import re
 from sqlalchemy.orm import declarative_base
-from app.constants import Account_type,Account_status
+from constants import Account_type,Account_status
 
 Base = declarative_base()
 class User(ABC,BaseModel):

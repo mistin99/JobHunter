@@ -1,7 +1,6 @@
 import smtplib
 from urllib.parse import quote
-
-from app.core.config import settings
+from core.config import settings
 
 
 def send_verification_email(to_email: str, token: str):

@@ -3,15 +3,15 @@ from fastapi import APIRouter, Depends, HTTPException
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from app.constants import Account_status
-from app.core.config import settings
-from app.crud.organization import create_org
-from app.crud.person import create_person
-from app.crud.postal_address import create_postal_address
-from app.database import get_db
-from app.models.organization import OrganizationCreate
-from app.models.person import Person, PersonCreate
-from app.models.postal_address import PostalAddressCreate
+from constants import Account_status
+from core.config import settings
+from crud.organization import create_org
+from crud.person import create_person
+from crud.postal_address import create_postal_address
+from database import get_db
+from models.organization import OrganizationCreate
+from models.person import Person, PersonCreate
+from models.postal_address import PostalAddressCreate
 
 router = APIRouter()
 

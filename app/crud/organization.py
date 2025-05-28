@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
 
-from app.core.security import create_verification_token
-from app.models.organization import Organization, OrganizationCreate
-from app.services.email import send_verification_email
-from app.utils import convert_enums_to_values
+from core.security import create_verification_token
+from models.organization import Organization, OrganizationCreate
+from services.email import send_verification_email
+from utils import convert_enums_to_values
 
 
 def create_org(db: Session, organization: OrganizationCreate):

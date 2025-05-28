@@ -3,7 +3,7 @@ from typing import Any
 
 from jose import jwt
 
-from app.core.config import settings
+from core.config import settings
 
 
 def create_verification_token(user_id: int) -> str:
