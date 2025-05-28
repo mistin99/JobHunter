@@ -3,26 +3,11 @@ import {
   Button,
   Container,
   Menu,
-  MenuItem,
-  Modal,
-  Typography,
+  MenuItem
 } from '@mui/material';
 import { useState } from 'react';
+import JobDetailsModal from './components/JobDetailsModal';
 
-const style = {
-  position: 'absolute' as const,
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  borderRadius: 2,
-  boxShadow: 24,
-  p: 3,
-  width: 400,
-  maxHeight: '80vh',
-  display: 'flex',
-  flexDirection: 'column',
-};
 
 const jobsData = [
   {
@@ -135,7 +120,6 @@ export default function HomePage() {
   return (
     <Box sx={{ minHeight: '100vh', minWidth: '100vw', bgcolor: '#f9fafb', py: 4 }}>
       <Container maxWidth="lg">
-        {/* Top Navigation */}
         <Box sx={{ position: 'relative', mb: 4, height: 48 }}>
           <Box
             component="h1"
@@ -152,7 +136,6 @@ export default function HomePage() {
           >
             JobHunter
           </Box>
-
           <Box
             sx={{
               display: 'flex',
@@ -180,6 +163,7 @@ export default function HomePage() {
               MenuListProps={{
                 'aria-labelledby': 'register-button',
               }}
+
             >
               <MenuItem onClick={() => handleRegisterSelect('User')}>
                 Register as User
@@ -191,7 +175,6 @@ export default function HomePage() {
           </Box>
         </Box>
 
-        {/* Job Listings */}
         <Box sx={{ maxWidth: 768, mx: 'auto' }}>
           <Box component="h2" sx={{ fontSize: 20, fontWeight: 600, mb: 2 }}>
             Latest Job Listings
@@ -225,60 +208,7 @@ export default function HomePage() {
         </Box>
       </Container>
 
-      {/* Job Detail Modal */}
-      <Modal
-        open={!!selectedJob}
-        onClose={handleClose}
-        aria-labelledby="job-title"
-        aria-describedby="job-description"
-      >
-        <Box sx={style}>
-          {selectedJob && (
-            <>
-              <Typography
-                id="job-title"
-                variant="h6"
-                component="h2"
-                sx={{ mb: 2, color: 'black' }}
-              >
-                {selectedJob.title} at {selectedJob.company}
-              </Typography>
-              <Typography
-                id="job-location"
-                sx={{ mb: 2, color: 'text.secondary' }}
-              >
-                Location: {selectedJob.location}
-              </Typography>
-              <Box
-                sx={{
-                  overflowY: 'auto',
-                  flexGrow: 1,
-                  whiteSpace: 'pre-line',
-                  mb: 2,
-                  color: 'text.primary',
-                }}
-                id="job-description"
-              >
-                {selectedJob.description}
-              </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  gap: 1,
-                }}
-              >
-                <Button variant="contained" onClick={handleClose}>
-                  Apply
-                </Button>
-                <Button variant="outlined" onClick={handleClose}>
-                  Close
-                </Button>
-              </Box>
-            </>
-          )}
-        </Box>
-      </Modal>
+      <JobDetailsModal job={selectedJob} open={!!selectedJob} onClose={handleClose} />
     </Box>
   );
 }
