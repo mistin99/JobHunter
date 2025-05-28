@@ -16,5 +16,5 @@ def create_person(db: Session, person: PersonCreate) -> Person:
     db.commit()
     db.refresh(db_person)
     token = create_verification_token(db_person.id)
-    send_verification_email(cast(str,db_person.email), token)
+    send_verification_email(cast(str, db_person.email), token)
     return db_person

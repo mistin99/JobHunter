@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from core.config import settings
+
 
 def get_engine():
     try:
@@ -8,7 +10,9 @@ def get_engine():
     except Exception as e:
         print("DB Error:", e)
 
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=get_engine())
+
 
 def get_db():
     db = SessionLocal()
