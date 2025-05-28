@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, HTTPException
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
@@ -24,7 +23,7 @@ def register_person(
     create_postal_address(
         db=db,
         address=address,
-        user_id= user_db.id,
+        user_id=user_db.id,
         owner_type=user_db.account_type,
     )
     return {"message": "Email has been sent for verification"}
@@ -45,11 +44,14 @@ def register(
     )
     return {"message": "Email has been sent for verification"}
 
+
 @router.get("/verify-email")
 def verify_email(token: str, db: Session = Depends(get_db)):
     try:
         print(f"---------------------{token}")
-        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(
+            token, settings.secret_key, algorithms=[settings.algorithm]
+        )
         print(f"---------------------{payload}")
         user_id = payload.get("sub")
         print(f"---------------------{user_id}")
