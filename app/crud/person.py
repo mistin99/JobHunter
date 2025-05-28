@@ -2,10 +2,10 @@ from typing import cast
 
 from sqlalchemy.orm import Session
 
-from app.core.security import create_verification_token
-from app.models.person import Person, PersonCreate
-from app.services.email import send_verification_email
-from app.utils import convert_enums_to_values
+from core.security import create_verification_token
+from models.person import Person, PersonCreate
+from services.email import send_verification_email
+from utils import convert_enums_to_values
 
 
 def create_person(db: Session, person: PersonCreate) -> Person:
