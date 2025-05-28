@@ -3,17 +3,17 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    database_url: str
-    app_base_url: AnyHttpUrl
-    secret_key: str
-    algorithm: str
-    email_host: str
-    email_port: int
-    email_user: str
-    email_password: str
+    database_url: str | None = None
+    app_base_url: AnyHttpUrl | None = None
+    secret_key: str | None = None
+    algorithm: str | None = None
+    email_host: str | None = None
+    email_port: int | None = None
+    email_user: str | None = None
+    email_password: str | None = None
 
     class Config:
         env_file = ".env"
 
 
-settings = Settings()  # type: ignore
+settings = Settings()

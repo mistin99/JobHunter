@@ -1,8 +1,8 @@
 from sqlalchemy import Enum, Integer, String
 from sqlalchemy.orm import Mapped, declarative_base, mapped_column
 
-from app.constants import Account_status, Account_type
-from app.models.user import User
+from constants import Account_status, Account_type
+from models.user import User
 
 Base = declarative_base()
 

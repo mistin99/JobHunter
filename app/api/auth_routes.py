@@ -1,17 +1,16 @@
-
 from fastapi import APIRouter, Depends, HTTPException
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from app.constants import Account_status
-from app.core.config import settings
-from app.crud.organization import create_org
-from app.crud.person import create_person
-from app.crud.postal_address import create_postal_address
-from app.database import get_db
-from app.models.organization import OrganizationCreate
-from app.models.person import Person, PersonCreate
-from app.models.postal_address import PostalAddressCreate
+from constants import Account_status
+from core.config import settings
+from crud.organization import create_org
+from crud.person import create_person
+from crud.postal_address import create_postal_address
+from database import get_db
+from models.organization import OrganizationCreate
+from models.person import Person, PersonCreate
+from models.postal_address import PostalAddressCreate
 
 router = APIRouter()
 
@@ -24,7 +23,7 @@ def register_person(
     create_postal_address(
         db=db,
         address=address,
-        user_id= user_db.id,
+        user_id=user_db.id,
         owner_type=user_db.account_type,
     )
     return {"message": "Email has been sent for verification"}
@@ -45,11 +44,14 @@ def register(
     )
     return {"message": "Email has been sent for verification"}
 
+
 @router.get("/verify-email")
 def verify_email(token: str, db: Session = Depends(get_db)):
     try:
         print(f"---------------------{token}")
-        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(
+            token, settings.secret_key, algorithms=[settings.algorithm]
+        )
         print(f"---------------------{payload}")
         user_id = payload.get("sub")
         print(f"---------------------{user_id}")
