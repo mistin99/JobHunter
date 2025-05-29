@@ -1,11 +1,33 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class Account_type(str, Enum):
-    PERSON = "Person"
-    ORGANIZATION = "Organization"
+class Status(StrEnum):
+    PENDING = "Pending"
+    APPROVED = "Approved"
+    REJECTED = "Rejected"
 
 
-class Account_status(str, Enum):
-    VERIFIED = "Verified"
-    UNVERIFIED = "Unverified"
+class Role(StrEnum):
+    ADMIN = "Admin"
+    """Authorised do everything and has access to anything"""
+
+    ORGANIZATION_OWNER = "Organization Owner"
+    """Authorised to do anything for the organizations it has created"""
+
+    RECRUITER = "Recruiter"
+    """Authorised to anything for the job offers it has created"""
+
+    MODERATOR = "Moderator"
+    """
+    Authorised to do execute some actions against an organizations it has access to
+    and can do anything to job offers it has acces to.
+    """
+
+    APPLICANT = "Applicant"
+    """Authorised to view and apply for job offers"""
+
+
+class Tag(StrEnum):
+    HTML = "Html"
+    CSS = "Css"
+    WEB_DEVELOPER = "Web Developer"
