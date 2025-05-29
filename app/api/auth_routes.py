@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from constants import Account_status
+from constants import Status
 from core.config import settings
 from crud.organization import create_org
 from crud.person import create_person
@@ -24,7 +24,6 @@ def register_person(
         db=db,
         address=address,
         user_id=user_db.id,
-        owner_type=user_db.account_type,
     )
     return {"message": "Email has been sent for verification"}
 
@@ -40,7 +39,6 @@ def register(
         db=db,
         address=address,
         user_id=organization_db.id,
-        owner_type=organization_db.account_type,
     )
     return {"message": "Email has been sent for verification"}
 
@@ -64,6 +62,6 @@ def verify_email(token: str, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    user.status = Account_status.VERIFIED
+    user.status = Status.VERIFIED
     db.commit()
     return {"message": "Email verified successfully"}

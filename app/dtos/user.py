@@ -2,11 +2,8 @@ from abc import ABC
 import re
 
 from pydantic import BaseModel, EmailStr, field_validator
-from sqlalchemy.orm import declarative_base
 
-from constants import Account_status, Account_type
-
-Base = declarative_base()
+from constants import Status
 
 
 class User(ABC, BaseModel):
@@ -15,8 +12,7 @@ class User(ABC, BaseModel):
     first_name: str
     name: str
     phone_number: str
-    account_type: Account_type
-    status: Account_status = Account_status.UNVERIFIED
+    status: Status = Status.UNVERIFIED
 
     class Config:
         from_attributes = True
@@ -44,4 +40,4 @@ class User(ABC, BaseModel):
         return v
 
     def get_summary(self):
-        return f"{self.name},{self.first_name},{self.phone_number},{self.account_type}."
+        return f"{self.name},{self.first_name},{self.phone_number}."
