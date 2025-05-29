@@ -16,7 +16,7 @@ class Organization(BaseEntity):
     __tablename__ = "organizations"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    email: Mapped[str] = mapped_column(String(100), unique=True, index=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True)
     name: Mapped[str] = mapped_column(String(20))
     phone_number: Mapped[str] = mapped_column(String(30))
     website_url: Mapped[str] = mapped_column(String(255))

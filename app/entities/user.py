@@ -5,7 +5,6 @@ from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String, Tabl
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from constants import Status
-from entities.address import Address
 from entities.base import BaseEntity
 
 if TYPE_CHECKING:
@@ -63,7 +62,9 @@ class User(BaseEntity):
 
     # Navigation property
     applications: Mapped[list["JobOffer"]] = relationship(
-        "JobOffer", back_populates="user", cascade="all, delete-orphan"
+        "JobOffer",
+        secondary=users_applications,
+        back_populates="applicants",
     )
     roles: Mapped[list["UserRole"]] = relationship(
         "UserRole", secondary=users_roles, backref="users"

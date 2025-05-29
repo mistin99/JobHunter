@@ -37,5 +37,5 @@ class JobOffer(BaseEntity):
     applicants: Mapped[list[User]] = relationship(
         "User",
         secondary=users_applications,
-        back_populates="applied_jobs",
+        back_populates="applications",
     )

@@ -3,12 +3,8 @@ from enum import StrEnum
 
 class Status(StrEnum):
     PENDING = "Pending"
-    APPROVED = "Rejected"
+    APPROVED = "Approved"
     REJECTED = "Rejected"
-
-    # TODO delete the ones bellow later
-    VERIFIED = "Verified"
-    UNVERIFIED = "Unverified"
 
 
 class Role(StrEnum):

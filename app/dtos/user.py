@@ -1,43 +1,23 @@
 from abc import ABC
-import re
+from typing import Annotated
 
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, BeforeValidator, EmailStr
 
 from constants import Status
+import dtos.validators as validators
 
 
-class User(ABC, BaseModel):
-    email: EmailStr
-    password: str
-    first_name: str
-    name: str
-    phone_number: str
-    status: Status = Status.UNVERIFIED
+class UserDto(ABC, BaseModel):
+    id: int | None = None
+    status: Status = Status.PENDING
+    email: Annotated[EmailStr, BeforeValidator(validators.not_empty)]
+    password: Annotated[str, BeforeValidator(validators.strong_password)]
+    first_name: Annotated[str, BeforeValidator(validators.not_empty)]
+    last_name: Annotated[str, BeforeValidator(validators.not_empty)]
+    phone_number: Annotated[str, BeforeValidator(validators.not_empty)]
 
     class Config:
         from_attributes = True
 
-    @field_validator("email")
-    def name_must_be_nonempty(cls, v: str) -> str:
-        if not v.strip():
-            raise ValueError("Name cannot be empty")
-        return v
-
-    @field_validator("password")
-    def password_strength(cls, v: str) -> str:
-        if not all(
-            [
-                len(v) >= 8,
-                re.search(r"[A-Z]", v),
-                re.search(r"[a-z]", v),
-                re.search(r"[\d]", v),
-                re.search(r"[\W_]", v),
-            ]
-        ):
-            raise ValueError(
-                "Password must be ≥8 chars, with upper, lower, digit, and special char"
-            )
-        return v
-
-    def get_summary(self):
-        return f"{self.name},{self.first_name},{self.phone_number}."
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.email}."
