@@ -1,10 +1,22 @@
 from enum import StrEnum
 
 
+class TokenType(StrEnum):
+    ACCESS = "Access"
+    REFRESH = "Refresh"
+    EMAIL_VERIFICATION = "Email Verification"
+
+    def __str__(self) -> str:
+        return self.value
+
+
 class Status(StrEnum):
     PENDING = "Pending"
     APPROVED = "Approved"
     REJECTED = "Rejected"
+
+    def __str__(self) -> str:
+        return self.value
 
 
 class Role(StrEnum):
@@ -26,8 +38,14 @@ class Role(StrEnum):
     APPLICANT = "Applicant"
     """Authorised to view and apply for job offers"""
 
+    def __str__(self) -> str:
+        return self.value
+
 
 class Tag(StrEnum):
     HTML = "Html"
     CSS = "Css"
     WEB_DEVELOPER = "Web Developer"
+
+    def __str__(self) -> str:
+        return self.value
