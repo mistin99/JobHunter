@@ -1,0 +1,78 @@
+from fastapi import APIRouter, Cookie, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
+from jose import JWTError
+from sqlalchemy.orm import Session
+
+from constants import Status, TokenType
+from database import get_db
+from dtos.user import UserSignInDto, UserSignUpDto
+from services.auth import AuthService
+
+router = APIRouter()
+
+
+@router.post("/signup")
+def signup(user: UserSignUpDto, db: Session = Depends(get_db)) -> JSONResponse:
+    service = AuthService(db=db)
+    try:
+        access_token, refresh_token = service.signup(user)
+    except LookupError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST) from e
+
+    response = JSONResponse(
+        content={"email": user.email, "token": access_token},
+        status_code=status.HTTP_201_CREATED,
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        samesite="strict",
+        path="/auth/refresh",
+    )
+    return response
+
+
+@router.post("/signin")
+def signin(user: UserSignInDto, db: Session = Depends(get_db)) -> JSONResponse:
+    service = AuthService(db=db)
+    try:
+        access_token, refresh_token = service.signin(user)
+    except LookupError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST) from e
+
+    response = JSONResponse(
+        content={"token": access_token}, status_code=status.HTTP_200_OK
+    )
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        samesite="strict",
+        path="/auth/refresh",
+    )
+    return response
+
+
+@router.post("/refresh")
+def refresh_token(
+    token: str = Cookie(""), db: Session = Depends(get_db)
+) -> JSONResponse:
+    service = AuthService(db=db)
+    try:
+        token = service.refresh_access_token(token)
+    except RuntimeError as e:
+        
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST) from e
+    return JSONResponse(content={"token": token}, status_code=status.HTTP_200_OK)
+
+
+@router.get("/verify-email")
+def verify_email(token: str, db: Session = Depends(get_db)):
+    service = AuthService(db=db)
+    try:
+        user_id = service.verify_token(token, TokenType.EMAIL_VERIFICATION)
+    except JWTError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED) from e
+    user = service.change_user_status(user_id, Status.APPROVED)
+    return JSONResponse(content=user.model_dump(), status_code=status.HTTP_200_OK)
