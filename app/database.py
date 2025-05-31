@@ -1,21 +1,17 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 from core.config import settings
 
 
-def get_engine():
-    try:
-        return create_engine(settings.database_url)
-    except Exception as e:
-        print("DB Error:", e)
-
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=get_engine())
+def _get_session() -> Session:
+    engine_cls = create_engine(settings.database_url, isolation_level="REPEATABLE READ")
+    session_facotry = sessionmaker(autocommit=False, autoflush=False, bind=engine_cls)
+    return session_facotry()
 
 
 def get_db():
-    db = SessionLocal()
+    db = _get_session()
     try:
         yield db
     finally:
