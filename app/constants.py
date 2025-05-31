@@ -1,7 +1,6 @@
 from enum import StrEnum
 
 
-<<<<<<< Updated upstream
 class TokenType(StrEnum):
     ACCESS = "Access"
     REFRESH = "Refresh"
@@ -18,16 +17,6 @@ class Status(StrEnum):
 
     def __str__(self) -> str:
         return self.value
-=======
-class Status(StrEnum):
-    PENDING = "Pending"
-    APPROVED = "Rejected"
-    REJECTED = "Rejected"
-
-    # TODO delete the ones bellow later
-    VERIFIED = "Verified"
-    UNVERIFIED = "Unverified"
->>>>>>> Stashed changes
 
 
 class Role(StrEnum):
@@ -49,21 +38,14 @@ class Role(StrEnum):
     APPLICANT = "Applicant"
     """Authorised to view and apply for job offers"""
 
-<<<<<<< Updated upstream
     def __str__(self) -> str:
         return self.value
 
-=======
->>>>>>> Stashed changes
 
 class Tag(StrEnum):
     HTML = "Html"
     CSS = "Css"
-<<<<<<< Updated upstream
     WEB_DEVELOPER = "Web Developer"
 
     def __str__(self) -> str:
         return self.value
-=======
-    WEB_DEVELOPER = "Web Developer"
->>>>>>> Stashed changes
