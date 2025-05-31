@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     email_port: int | None = None
     email_user: str | None = None
     email_password: str | None = None
-
+    origins: list[AnyHttpUrl] = []
     class Config:
         env_file = ".env"
 
