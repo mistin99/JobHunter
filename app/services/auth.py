@@ -4,10 +4,11 @@ from typing import cast
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from constants import Status, TokenType
+from constants import Action, Role, Status, TokenType
 from core.config import settings
 from dtos.user import UserDto, UserSignInDto, UserSignUpDto
 from entities.user import User
+from services.user import UserService
 from utils import convert_enums_to_values
 
 
@@ -15,6 +16,7 @@ from utils import convert_enums_to_values
 class AuthService:
 
     def __init__(self, db: Session) -> None:
+        self.user_service = UserService(db=db)
         self.db = db
 
     def signup(self, user: UserSignUpDto) -> tuple[str, str, UserDto]:
@@ -23,11 +25,11 @@ class AuthService:
         try:
             entity = User(**data)
             self.db.add(entity)
-            self.db.commit()
-            self.db.refresh(entity)
+            self.db.flush()
         except Exception as e:
             raise RuntimeError("User with this email already exists!") from e
         dto = UserSignInDto.model_validate(entity)
+        self.user_service.manage_role(entity.id, Role.APPLICANT, Action.ADD)
         self.send_verification_email(dto)
         return self.signin(dto)
 
@@ -40,8 +42,8 @@ class AuthService:
         return (
             self._create_token(entity.id, TokenType.ACCESS),
             self._create_token(entity.id, TokenType.REFRESH),
-            UserDto.model_validate(entity)
-        )   
+            UserDto.model_validate(entity),
+        )
 
     def send_verification_email(self, user: UserSignInDto) -> None:
         from services.email import send_verification_email
@@ -56,8 +58,6 @@ class AuthService:
             raise RuntimeError("Account couldn't be verified!")
         entity = cast(User, entity)
         entity.status = status
-        self.db.commit()
-        self.db.refresh(entity)
         return UserDto.model_validate(entity)
 
     @classmethod
