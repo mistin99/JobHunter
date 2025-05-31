@@ -14,12 +14,12 @@ router = APIRouter()
 def signup(user: UserSignUpDto, db: Session = Depends(get_db)) -> JSONResponse:
     service = AuthService(db=db)
     try:
-        access_token, refresh_token = service.signup(user)
+        access_token, refresh_token, dto = service.signup(user)
     except LookupError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST) from e
 
     response = JSONResponse(
-        content={"email": user.email, "token": access_token},
+        content={"user": dto.model_dump(), "token": access_token},
         status_code=status.HTTP_201_CREATED,
     )
     response.set_cookie(
@@ -36,12 +36,13 @@ def signup(user: UserSignUpDto, db: Session = Depends(get_db)) -> JSONResponse:
 def signin(user: UserSignInDto, db: Session = Depends(get_db)) -> JSONResponse:
     service = AuthService(db=db)
     try:
-        access_token, refresh_token = service.signin(user)
+        access_token, refresh_token, dto = service.signin(user)
     except LookupError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST) from e
 
     response = JSONResponse(
-        content={"token": access_token}, status_code=status.HTTP_200_OK
+        content={"user": dto.model_dump(), "token": access_token},
+        status_code=status.HTTP_200_OK,
     )
     response.set_cookie(
         key="token",

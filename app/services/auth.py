@@ -17,7 +17,7 @@ class AuthService:
     def __init__(self, db: Session) -> None:
         self.db = db
 
-    def signup(self, user: UserSignUpDto) -> tuple[str, str]:
+    def signup(self, user: UserSignUpDto) -> tuple[str, str, UserDto]:
         data = user.model_dump()
         data = convert_enums_to_values(data)
         try:
@@ -31,7 +31,7 @@ class AuthService:
         self.send_verification_email(dto)
         return self.signin(dto)
 
-    def signin(self, user: UserSignInDto) -> tuple[str, str]:
+    def signin(self, user: UserSignInDto) -> tuple[str, str, UserDto]:
         entity = cast(
             User, self.db.query(User).filter(User.email == user.email).first()
         )
@@ -40,6 +40,7 @@ class AuthService:
         return (
             self._create_token(entity.id, TokenType.ACCESS),
             self._create_token(entity.id, TokenType.REFRESH),
+            UserDto.model_validate(entity)
         )   
 
     def send_verification_email(self, user: UserSignInDto) -> None:
@@ -50,22 +51,6 @@ class AuthService:
         token = self._create_token(user.id, TokenType.EMAIL_VERIFICATION)
         send_verification_email(user.email, token)
 
-    def refresh_access_token(self, refresh_token: str) -> str:
-        try:
-            user_id = self.verify_token(refresh_token, TokenType.REFRESH)
-            access_token = self._create_token(user_id, TokenType.ACCESS)
-        except JWTError as e:
-            raise RuntimeError("Invalid refresh token") from e
-        return access_token
-
-    def verify_token(self, token: str, token_type: TokenType) -> int:
-        payload = jwt.decode(
-            token, key=settings.secret_key, algorithms=[settings.algorithm]
-        )
-        if TokenType(payload["type"]) != token_type:
-            raise JWTError("Invalid token type: %s", token_type)
-        return int(payload["sub"])
-
     def change_user_status(self, user_id: int, status: Status) -> UserDto:
         if not (entity := self.db.query(User).get(user_id)):
             raise RuntimeError("Account couldn't be verified!")
@@ -75,7 +60,26 @@ class AuthService:
         self.db.refresh(entity)
         return UserDto.model_validate(entity)
 
-    def _create_token(self, user_id: int, token_type: TokenType) -> str:
+    @classmethod
+    def refresh_access_token(cls, refresh_token: str) -> str:
+        try:
+            user_id = cls.verify_token(refresh_token, TokenType.REFRESH)
+            access_token = cls._create_token(user_id, TokenType.ACCESS)
+        except JWTError as e:
+            raise RuntimeError("Invalid refresh token") from e
+        return access_token
+
+    @staticmethod
+    def verify_token(token: str, token_type: TokenType) -> int:
+        payload = jwt.decode(
+            token, key=settings.secret_key, algorithms=[settings.algorithm]
+        )
+        if TokenType(payload["type"]) != token_type:
+            raise JWTError("Invalid token type: %s", token_type)
+        return int(payload["sub"])
+
+    @staticmethod
+    def _create_token(user_id: int, token_type: TokenType) -> str:
         if token_type == TokenType.ACCESS:
             seconds = settings.access_token_expire_seconds
         elif token_type == TokenType.REFRESH:
