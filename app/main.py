@@ -1,11 +1,6 @@
 from fastapi import FastAPI
 
-from api import auth_routes
+from api import auth_router
 
 app = FastAPI()
-app.include_router(auth_routes.router, prefix="/auth", tags=["auth"])
-
-
-@app.get("/")
-def read_root():
-    return {"message:" "Helo"}
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
