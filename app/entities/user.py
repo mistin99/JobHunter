@@ -47,7 +47,7 @@ class User(BaseEntity):
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     first_name: Mapped[str] = mapped_column(String(20), nullable=False)
     last_name: Mapped[str] = mapped_column(String(20), nullable=False)
-    phone_number: Mapped[str] = mapped_column(String(30))
+    phone_number: Mapped[str] = mapped_column(String(30), nullable=True)
     status: Mapped[Status] = mapped_column(
         Enum(
             Status,

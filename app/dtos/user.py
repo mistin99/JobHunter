@@ -15,18 +15,18 @@ class BaseUserDto(BaseModel):
 # TODO add all user fields in here
 class UserDto(BaseUserDto):
     status: Status = Status.PENDING
+    phone_number: str | None = None
     first_name: Annotated[str, BeforeValidator(validators.not_empty)]
     last_name: Annotated[str, BeforeValidator(validators.not_empty)]
     password: Annotated[str, BeforeValidator(validators.strong_password)]
-    phone_number: Annotated[str, BeforeValidator(validators.not_empty)]
 
 
 class UserSignUpDto(BaseUserDto):
     status: Status = Status.PENDING
+    phone_number: str | None = None
     first_name: Annotated[str, BeforeValidator(validators.not_empty)]
     last_name: Annotated[str, BeforeValidator(validators.not_empty)]
     password: Annotated[str, BeforeValidator(validators.strong_password)]
-    phone_number: Annotated[str, BeforeValidator(validators.not_empty)]
 
 
 
