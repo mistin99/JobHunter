@@ -1,4 +1,4 @@
-from enum import StrEnum
+from enum import Enum, StrEnum, auto
 
 
 class TokenType(StrEnum):
@@ -49,3 +49,8 @@ class Tag(StrEnum):
 
     def __str__(self) -> str:
         return self.value
+
+
+class Action(Enum):
+    ADD = auto()
+    REMOVE = auto()
