@@ -17,8 +17,7 @@ class Organization(BaseEntity):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     email: Mapped[str] = mapped_column(String(100), unique=True)
-    name: Mapped[str] = mapped_column(String(20))
-    phone_number: Mapped[str] = mapped_column(String(30))
+    name: Mapped[str] = mapped_column(String(50), unique=True)
     website_url: Mapped[str] = mapped_column(String(255))
     description: Mapped[str] = mapped_column(Text, nullable=False)
     status: Mapped[Status] = mapped_column(
