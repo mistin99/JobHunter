@@ -7,13 +7,13 @@ import dtos.validators as validators
 
 
 class BaseUserDto(BaseModel):
+    id: int | None = None
     model_config = ConfigDict(from_attributes=True)
     email: Annotated[EmailStr, BeforeValidator(validators.not_empty)]
 
 
 # TODO add all user fields in here
 class UserDto(BaseUserDto):
-    id: int | None = None
     status: Status = Status.PENDING
     first_name: Annotated[str, BeforeValidator(validators.not_empty)]
     last_name: Annotated[str, BeforeValidator(validators.not_empty)]
@@ -22,7 +22,6 @@ class UserDto(BaseUserDto):
 
 
 class UserSignUpDto(BaseUserDto):
-    id: int | None = None
     status: Status = Status.PENDING
     first_name: Annotated[str, BeforeValidator(validators.not_empty)]
     last_name: Annotated[str, BeforeValidator(validators.not_empty)]
@@ -32,5 +31,4 @@ class UserSignUpDto(BaseUserDto):
 
 
 class UserSignInDto(BaseUserDto):
-    id: int
     password: Annotated[str, BeforeValidator(validators.strong_password)]

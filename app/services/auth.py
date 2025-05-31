@@ -28,20 +28,25 @@ class AuthService:
         except Exception as e:
             raise RuntimeError("User with this email already exists!") from e
         dto = UserSignInDto.model_validate(entity)
+        self.send_verification_email(dto)
         return self.signin(dto)
 
     def signin(self, user: UserSignInDto) -> tuple[str, str]:
-        entity = cast(User, self.db.query(User).get(user.id))
+        entity = cast(
+            User, self.db.query(User).filter(User.email == user.email).first()
+        )
         if not (entity and entity.password == user.password):
             raise LookupError("Invalid user credentials")
         return (
-            self._create_token(entity.id, TokenType.ACCESS), 
+            self._create_token(entity.id, TokenType.ACCESS),
             self._create_token(entity.id, TokenType.REFRESH),
-        )
+        )   
 
     def send_verification_email(self, user: UserSignInDto) -> None:
         from services.email import send_verification_email
 
+        if not user.id:
+            raise RuntimeError("Can not send email to non existant user!")
         token = self._create_token(user.id, TokenType.EMAIL_VERIFICATION)
         send_verification_email(user.email, token)
 
@@ -54,7 +59,9 @@ class AuthService:
         return access_token
 
     def verify_token(self, token: str, token_type: TokenType) -> int:
-        payload = jwt.decode(token, key=settings.secret_key, algorithms=[settings.algorithm])
+        payload = jwt.decode(
+            token, key=settings.secret_key, algorithms=[settings.algorithm]
+        )
         if TokenType(payload["type"]) != token_type:
             raise JWTError("Invalid token type: %s", token_type)
         return int(payload["sub"])
@@ -63,7 +70,7 @@ class AuthService:
         if not (entity := self.db.query(User).get(user_id)):
             raise RuntimeError("Account couldn't be verified!")
         entity = cast(User, entity)
-        entity.status = Status.APPROVED
+        entity.status = status
         self.db.commit()
         self.db.refresh(entity)
         return UserDto.model_validate(entity)
@@ -76,7 +83,7 @@ class AuthService:
         elif token_type == TokenType.EMAIL_VERIFICATION:
             seconds = settings.email_verification_token_expire_seconds
         else:
-            raise JWTError("Invalid token type: %s" token_type)
+            raise JWTError("Invalid token type: %s", token_type)
 
         delta = datetime.timedelta(seconds=seconds)
         expiry_date = datetime.datetime.now(datetime.timezone.utc) + delta

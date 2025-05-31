@@ -45,7 +45,7 @@ def signin(user: UserSignInDto, db: Session = Depends(get_db)) -> JSONResponse:
         content={"token": access_token}, status_code=status.HTTP_200_OK
     )
     response.set_cookie(
-        key="refresh_token",
+        key="token",
         value=refresh_token,
         httponly=True,
         samesite="strict",
@@ -55,14 +55,13 @@ def signin(user: UserSignInDto, db: Session = Depends(get_db)) -> JSONResponse:
 
 
 @router.post("/refresh")
-def refresh_token(
+def refresh_access_token(
     token: str = Cookie(""), db: Session = Depends(get_db)
 ) -> JSONResponse:
     service = AuthService(db=db)
     try:
         token = service.refresh_access_token(token)
     except RuntimeError as e:
-        
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST) from e
     return JSONResponse(content={"token": token}, status_code=status.HTTP_200_OK)
 
