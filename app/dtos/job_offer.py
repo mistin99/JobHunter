@@ -19,7 +19,7 @@ class JobOfferDto(BaseModel):
     organization_id: int | None = None
     title: Annotated[str | None, BeforeValidator(validators.not_empty)] = None
     description: Annotated[str | None, BeforeValidator(validators.not_empty)] = None
-    tags: list[str]
+    tags: Annotated[list[str], BeforeValidator(validators.parse_tags)]
 
 
 class JobOfferSearchDto(BaseModel):
