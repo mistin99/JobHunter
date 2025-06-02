@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from constants import Status, TokenType
 from database import get_db
-from dtos.user import UserSignInDto, UserSignUpDto
+from dtos.user import UserDto
 from services.auth import AuthService
 from utils import transactional
 
@@ -14,7 +14,7 @@ router = APIRouter()
 
 @router.post("/signup")
 @transactional
-def signup(user: UserSignUpDto, db: Session = Depends(get_db)) -> JSONResponse:
+def signup(user: UserDto, db: Session = Depends(get_db)) -> JSONResponse:
     service = AuthService(db=db)
     try:
         access_token, refresh_token, dto = service.signup(user)
@@ -37,7 +37,7 @@ def signup(user: UserSignUpDto, db: Session = Depends(get_db)) -> JSONResponse:
 
 @router.post("/signin")
 @transactional
-def signin(user: UserSignInDto, db: Session = Depends(get_db)) -> JSONResponse:
+def signin(user: UserDto, db: Session = Depends(get_db)) -> JSONResponse:
     service = AuthService(db=db)
     try:
         access_token, refresh_token, dto = service.signin(user)

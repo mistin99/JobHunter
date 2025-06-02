@@ -25,4 +25,13 @@ class OrganizationDto(BaseModel):
     website_url: str
     description: str
     address: AddressDto
-    members: list[UserDto] = Field(default_factory=list)
+    member_ids: list[int] = Field(default_factory=list)
+
+
+class OrganizationSearchDto(BaseModel):
+    id: int | None = None
+    email: str | list[str] = Field(default_factory=list)
+    name: str | list[str] = Field(default_factory=list)
+    status: str | list[Status] = Field(default_factory=list)
+    member: str | list[int] = Field(default_factory=list)
+    job_offer_id: int | list[int] = Field(default_factory=list)
