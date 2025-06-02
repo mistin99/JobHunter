@@ -57,7 +57,7 @@ class UserService:
         """
         query = self.db.query(User)
         if id:
-            query = query.filter(User.id == id)
+            query = query.filter(User.id > id)
 
         query = self._build_search_query(
             initial_query=query,

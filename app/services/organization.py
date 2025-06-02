@@ -75,7 +75,7 @@ class OrganizationService:
         """
         query = self.db.query(Organization)
         if id:
-            query = query.filter(Organization.id == id)
+            query = query.filter(Organization.id > id)
 
         query = self._build_search_query(
             initial_query=query,
