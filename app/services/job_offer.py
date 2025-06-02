@@ -5,7 +5,7 @@ from sqlalchemy.orm import Query, Session
 
 from constants import Role
 from dtos.job_offer import JobOfferDto, JobTagDto
-from entities.job_offer import JobOffer
+from entities.job_offer import JobOffer, job_offers_tags
 from entities.job_tag import JobTag
 from services.user import UserService
 
@@ -43,9 +43,11 @@ class JobOfferService:
             filters.append(JobOffer.organization_id.in_(organization_id))
         if tag:
             tag = tag if isinstance(tag, list) else [tag]
-            sub_query = select(JobOffer.id).where(
-                JobTag.job_offer_id == JobOffer.id,
-                JobOffer.value.in_(tag),
+            sub_query = (
+                select(JobOffer.id)
+                .join(job_offers_tags, job_offers_tags.c.job_offer_id == JobOffer.id)
+                .join(JobTag, job_offers_tags.c.job_tag_id == JobTag.id)
+                .where(JobTag.value.in_(tag))
             )
             filters.append(exists(sub_query))
 
@@ -100,11 +102,11 @@ class JobOfferService:
         if roles - {r.value for r in user.roles} == roles:
             raise RuntimeError("Not authorized!")
 
-        tags = self.db.query(JobTag).filter(JobTag.value.in_(job_offer.tags))
-        if invalid_tags := job_offer.tags - {t.value for t in tags}:
+        tags = self.db.query(JobTag).filter(JobTag.value.in_(job_offer.tags)).all()
+        if invalid_tags := set(job_offer.tags) - {t.value for t in tags}:
             raise ValueError("Invalid job tags %s", ", ".join(invalid_tags))
 
-        entity = JobOffer(**job_offer.model_dump(exclude={"tags"}, tags=tags))
+        entity = JobOffer(**job_offer.model_dump(exclude={"tags"}), tags=tags)
         self.db.add(entity)
         self.db.flush()
         self.db.refresh(entity)

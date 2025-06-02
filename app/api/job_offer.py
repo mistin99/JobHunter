@@ -39,9 +39,9 @@ def search(job_offer: JobOfferSearchDto, db: Session = Depends(get_db)) -> JSONR
     )
 
 
-@router.get("/job_tags")
+@router.get("/job-tags")
 def get_job_tags(
-    id: int | None, limit: int = 100, db: Session = Depends(get_db)
+    id: int | None = None, limit: int = 100, db: Session = Depends(get_db)
 ) -> JSONResponse:
     service = JobOfferService(db=db)
     job_tags = list(service.fetch_job_tags(id, limit))
