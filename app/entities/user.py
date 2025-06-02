@@ -27,6 +27,7 @@ users_applications = Table(
         nullable=False,
         default=Status.PENDING,
     ),
+    Column("cv_url", String(255))
 )
 
 users_roles = Table(
