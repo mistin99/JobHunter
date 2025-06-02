@@ -1,7 +1,6 @@
-from sqlalchemy import Enum, Integer
+from sqlalchemy import Enum, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from constants import Tag
 from entities.base import BaseEntity
 from entities.job_offer import JobOffer, job_offers_tags
 
@@ -12,13 +11,8 @@ class JobTag(BaseEntity):
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True, index=True, nullable=False
     )
-    value: Mapped[Tag] = mapped_column(
-        Enum(
-            Tag,
-            values_callable=lambda enum_class: [e.value for e in enum_class],  # type: ignore
-            native_enum=False,
-        ),
-        nullable=False,
+    value: Mapped[str] = mapped_column(
+        String(50), nullable=False, unique=True, index=True
     )
 
     # Navigation properties

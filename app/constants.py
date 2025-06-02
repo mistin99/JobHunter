@@ -42,15 +42,6 @@ class Role(StrEnum):
         return self.value
 
 
-class Tag(StrEnum):
-    HTML = "Html"
-    CSS = "Css"
-    WEB_DEVELOPER = "Web Developer"
-
-    def __str__(self) -> str:
-        return self.value
-
-
 class Action(Enum):
     ADD = auto()
     REMOVE = auto()
