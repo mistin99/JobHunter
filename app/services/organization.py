@@ -5,7 +5,7 @@ from sqlalchemy.orm import Query, Session
 
 from constants import Action, Role
 from dtos.organization import OrganizationDto
-from dtos.user import UserUpdateDto
+from dtos.user import UserDto
 from entities.address import Address
 from entities.job_offer import JobOffer
 from entities.organization import Organization
@@ -78,7 +78,7 @@ class OrganizationService:
 
     def create(self, user_id: int, organization: OrganizationDto) -> OrganizationDto:
         entity = Organization(
-            **organization.model_dump(exclude={"address"}), 
+            **organization.model_dump(exclude={"address"}),
             address=Address(**organization.address.model_dump()),
         )
         self.db.add(entity)
@@ -89,6 +89,6 @@ class OrganizationService:
 
     def _set_owner(self, user_id: int, organization_id: int) -> None:
         user_service = UserService(db=self.db)
-        user = UserUpdateDto(id=user_id, organization_id=organization_id)
+        user = UserDto(id=user_id, organization_id=organization_id)
         user_service.update(user)
         user_service.manage_role(user_id, Role.ORGANIZATION_OWNER, Action.ADD)

@@ -1,9 +1,10 @@
 from typing import Generator
+
 from sqlalchemy import and_
 from sqlalchemy.orm import Query, Session
 
 from constants import Action, Role
-from dtos.user import UserDto, UserUpdateDto
+from dtos.user import UserDto
 from entities.role import UserRole
 from entities.user import User
 
@@ -72,7 +73,7 @@ class UserService:
             raise LookupError("User not found!")
         return UserDto.model_validate(entity)
 
-    def update(self, user: UserUpdateDto) -> UserDto:
+    def update(self, user: UserDto) -> UserDto:
         updates = user.model_dump(exclude={"id"}, exclude_unset=True)
         if not any(updates.values()):
             raise ValueError("User has no changes!")

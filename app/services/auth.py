@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from constants import Action, Role, Status, TokenType
 from core.config import settings
-from dtos.user import UserDto, UserSignInDto, UserSignUpDto
+from dtos.user import UserDto
 from entities.user import User
 from services.user import UserService
 from utils import convert_enums_to_values
@@ -19,8 +19,8 @@ class AuthService:
         self.user_service = UserService(db=db)
         self.db = db
 
-    def signup(self, user: UserSignUpDto) -> tuple[str, str, UserDto]:
-        data = user.model_dump()
+    def signup(self, user: UserDto) -> tuple[str, str, UserDto]:
+        data = user.model_dump() | {"status": Status.PENDING}
         data = convert_enums_to_values(data)
         try:
             entity = User(**data)
@@ -28,12 +28,12 @@ class AuthService:
             self.db.flush()
         except Exception as e:
             raise RuntimeError("User with this email already exists!") from e
-        dto = UserSignInDto.model_validate(entity)
+        dto = UserDto.model_validate(entity)
         self.user_service.manage_role(entity.id, Role.APPLICANT, Action.ADD)
         self.send_verification_email(dto)
         return self.signin(dto)
 
-    def signin(self, user: UserSignInDto) -> tuple[str, str, UserDto]:
+    def signin(self, user: UserDto) -> tuple[str, str, UserDto]:
         entity = cast(
             User, self.db.query(User).filter(User.email == user.email).first()
         )
@@ -45,10 +45,10 @@ class AuthService:
             UserDto.model_validate(entity),
         )
 
-    def send_verification_email(self, user: UserSignInDto) -> None:
+    def send_verification_email(self, user: UserDto) -> None:
         from services.email import send_verification_email
 
-        if not user.id:
+        if not user.id or not user.email:
             raise RuntimeError("Can not send email to non existant user!")
         token = self._create_token(user.id, TokenType.EMAIL_VERIFICATION)
         send_verification_email(user.email, token)

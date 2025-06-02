@@ -13,38 +13,15 @@ class RoleDto(BaseModel):
     value: Role
 
 
-class BaseUserDto(BaseModel):
+class UserDto(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int | None = None
-    email: Annotated[EmailStr, BeforeValidator(validators.not_empty)]
-
-
-# TODO add all user fields in here
-class UserDto(BaseUserDto):
-    status: Status = Status.PENDING
+    status: Status | None = None
     phone_number: str | None = None
-    first_name: Annotated[str, BeforeValidator(validators.not_empty)]
-    last_name: Annotated[str, BeforeValidator(validators.not_empty)]
-    password: Annotated[str, BeforeValidator(validators.strong_password)]
-    roles: list[RoleDto] = Field(default_factory=list)
-
-
-class UserSignUpDto(BaseUserDto):
-    status: Status = Status.PENDING
-    phone_number: str | None = None
-    first_name: Annotated[str, BeforeValidator(validators.not_empty)]
-    last_name: Annotated[str, BeforeValidator(validators.not_empty)]
-    password: Annotated[str, BeforeValidator(validators.strong_password)]
-
-
-class UserSignInDto(BaseUserDto):
-    password: Annotated[str, BeforeValidator(validators.strong_password)]
-
-
-class UserUpdateDto(BaseModel):
-    id: int
-    phone_number: str | None = None
-    organization_id: int | None
+    organization_id: int | None = None
+    email: Annotated[EmailStr | None, BeforeValidator(validators.not_empty)] = None
     first_name: Annotated[str | None, BeforeValidator(validators.not_empty)] = None
     last_name: Annotated[str | None, BeforeValidator(validators.not_empty)] = None
+    password: Annotated[str | None, BeforeValidator(validators.strong_password)] = None
+    roles: list[RoleDto] = Field(default_factory=list)
