@@ -35,3 +35,4 @@ class OrganizationSearchDto(BaseModel):
     status: str | list[Status] = Field(default_factory=list)
     member: str | list[int] = Field(default_factory=list)
     job_offer_id: int | list[int] = Field(default_factory=list)
+    limit: int = 100
