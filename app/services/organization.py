@@ -9,6 +9,7 @@ from dtos.user import UserDto
 from entities.address import Address
 from entities.job_offer import JobOffer
 from entities.organization import Organization
+from entities.user import User
 from services.user import UserService
 
 
@@ -23,6 +24,8 @@ class OrganizationService:
         initial_query: Query | None = None,
         email: str | list[str] | None = None,
         name: str | list[str] | None = None,
+        status: str | list[str] | None = None,
+        member: int | list[int] | None = None,
         job_offer_id: int | list[int] | None = None,
     ) -> Query[Organization]:
         filters = []
@@ -32,6 +35,16 @@ class OrganizationService:
         if name:
             name = name if isinstance(name, list) else [name]
             filters.append(Organization.name.in_(name))
+        if status:
+            status = status if isinstance(status, list) else [status]
+            filters.append(Organization.status.in_(status))
+        if member:
+            member = member if isinstance(member, list) else [member]
+            sub_query = select(User.id).where(
+                User.organization_id == Organization.id,
+                User.id.in_(member),
+            )
+            filters.append(exists(sub_query))
         if job_offer_id:
             job_offer_id = (
                 job_offer_id if isinstance(job_offer_id, list) else [job_offer_id]
@@ -51,6 +64,8 @@ class OrganizationService:
         id: int | None = None,
         email: str | list[str] | None = None,
         name: str | list[str] | None = None,
+        status: str | list[str] | None = None,
+        member: int | list[int] | None = None,
         job_offer_id: int | list[int] | None = None,
         limit: int = 100,
     ) -> Generator[OrganizationDto, None, None]:
@@ -66,6 +81,8 @@ class OrganizationService:
             initial_query=query,
             email=email,
             name=name,
+            status=status,
+            member=member,
             job_offer_id=job_offer_id,
         )
         for entity in query.order_by(Organization.id).limit(limit):
