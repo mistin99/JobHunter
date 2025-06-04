@@ -4,9 +4,11 @@ from sqlalchemy import and_, exists, select
 from sqlalchemy.orm import Query, Session
 
 from constants import Role
-from dtos.job_offer import JobOfferDto, JobTagDto
+from dtos.job_offer import ApplicationDto, JobOfferDto, JobTagDto
 from entities.job_offer import JobOffer, job_offers_tags
 from entities.job_tag import JobTag
+from entities.user import UserApplication
+from services.resume import ResumeService
 from services.user import UserService
 
 
@@ -14,6 +16,7 @@ class JobOfferService:
 
     def __init__(self, db: Session) -> None:
         self.db = db
+        self.resume_service = ResumeService(db=db)
         self.user_service = UserService(db=db)
 
     def _build_search_query(
@@ -111,3 +114,21 @@ class JobOfferService:
         self.db.flush()
         self.db.refresh(entity)
         return JobOfferDto.model_validate(entity)
+
+    def create_application(self, application: ApplicationDto) -> ApplicationDto:
+        resume = self.resume_service.fetch_by_id(application.resume_id)
+        if resume.user_id != application.user_id:
+            raise RuntimeError("This resume doesn't belong to the given user")
+
+        user = self.user_service.fetch_by_id(application.user_id)
+        job_offer = self.fetch_by_id(application.job_offer_id)
+        if user.organization_id == job_offer.organization_id:
+            raise RuntimeError(
+                "User is a member of this oragnization and cannot apply for the job"
+            )
+
+        entity = UserApplication(**application.model_dump())
+        self.db.add(entity)
+        self.db.flush()
+        self.db.refresh(entity)
+        return ApplicationDto.model_validate(entity)
