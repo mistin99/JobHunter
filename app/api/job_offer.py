@@ -3,9 +3,12 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from database import get_db
-from dtos.job_offer import JobOfferDto, JobOfferSearchDto
+from dtos.job_offer import ApplicationDto, JobOfferDto, JobOfferSearchDto
+from services.email import send_job_application_email
 from services.job_offer import JobOfferService
+from services.organization import OrganizationService
 from utils import get_current_user_id, transactional
+from fastapi.encoders import jsonable_encoder
 
 router = APIRouter()
 
@@ -48,4 +51,32 @@ def get_job_tags(
     return JSONResponse(
         content=[tag.model_dump() for tag in job_tags],
         status_code=status.HTTP_200_OK,
+    )
+
+
+@router.post("/apply")
+@transactional
+def apply(
+    application: ApplicationDto,
+    user_id: int = Depends(get_current_user_id),
+    db: Session = Depends(get_db),
+) -> JSONResponse:
+    service = JobOfferService(db=db)
+    organization_service = OrganizationService(db=db)
+    application.user_id = user_id
+
+    try:
+        application = service.create_application(application)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)
+        ) from e
+
+    organization = next(
+        organization_service.search(job_offer_id=application.job_offer_id)
+    )
+    send_job_application_email(organization.email, application)
+    return JSONResponse(
+        content=jsonable_encoder(application.model_dump()),
+        status_code=status.HTTP_201_CREATED,
     )
