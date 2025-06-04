@@ -1,7 +1,9 @@
+import datetime
 from typing import Annotated
 
 from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
 
+from constants import Status
 import dtos.validators as validators
 
 
@@ -30,3 +32,14 @@ class JobOfferSearchDto(BaseModel):
     title: str | list[str] = Field(default_factory=list)
     description: str | list[str] = Field(default_factory=list)
     tag: str | list[str] = Field(default_factory=list)
+    limit: int = 100
+
+
+class ApplicationDto(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    resume_id: int
+    job_offer_id: int
+    user_id: int | None = None
+    status: Status = Status.PENDING
+    application_date: datetime.datetime | None = None
