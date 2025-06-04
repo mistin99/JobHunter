@@ -38,3 +38,7 @@ class Organization(BaseEntity):
     members: Mapped[list["User"]] = relationship(
         "User", back_populates="organization", cascade="all, delete-orphan"
     )
+
+    @property
+    def member_ids(self) -> list[int]:
+        return [m.id for m in self.members]

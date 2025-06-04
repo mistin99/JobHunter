@@ -95,7 +95,7 @@ class OrganizationService:
 
     def create(self, user_id: int, organization: OrganizationDto) -> OrganizationDto:
         entity = Organization(
-            **organization.model_dump(exclude={"address"}),
+            **organization.model_dump(exclude={"address", "member_ids"}),
             address=Address(**organization.address.model_dump()),
         )
         self.db.add(entity)
