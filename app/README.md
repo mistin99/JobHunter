@@ -153,5 +153,62 @@ your_project/
 ---
 
 ## ✅ Done!
-
 You're now set up to manage your database schema using Alembic 🚀
+
+
+## ▶️ How to Run the App
+
+### 1. **Start in Detached Mode (Background)**
+```bash
+docker-compose up -d --build
+```
+
+- Builds the FastAPI app container and starts MySQL.
+- `-d` = detached mode (runs in background).
+- `--build` ensures everything is up to date.
+
+## 📝 Alembic Migrations
+
+To apply migrations **after containers are running**:
+```bash
+docker-compose exec api alembic upgrade head
+```
+
+To check current Alembic status:
+```bash
+docker-compose exec api alembic current
+```
+
+## 📺 Viewing Logs
+
+To follow logs in real-time:
+```bash
+docker-compose logs -f
+```
+
+To view logs for a specific service (e.g., MySQL or FastAPI):
+```bash
+docker-compose logs -f db
+docker-compose logs -f api
+```
+
+## 🧨 Tear Down Everything
+
+### Completely remove containers, volumes, and images:
+```bash
+docker-compose down -v --rmi all
+```
+
+This will:
+- Stop and remove all containers
+- Delete volumes (like MySQL data)
+- Delete all images (including app build)
+
+## 🔄 Rebuild from Scratch
+
+If you want a clean rebuild:
+```bash
+docker-compose down -v --rmi all
+docker-compose up -d --build
+docker-compose exec api alembic upgrade head
+```
