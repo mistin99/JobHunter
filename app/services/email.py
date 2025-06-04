@@ -9,7 +9,7 @@ from dtos.job_offer import ApplicationDto
 
 def send_verification_email(to_email: str, token: str):
     encoded_token = quote(token)
-    verify_link = f"{settings.app_base_url}auth/verify-email?token={encoded_token}"
+    verify_link = f"{settings.backend_url}/auth/verify-email?token={encoded_token}"
 
     with smtplib.SMTP(settings.email_host, settings.email_port) as connection:
         connection.starttls()
@@ -29,7 +29,8 @@ def send_job_application_email(to_email: str, application: ApplicationDto) -> No
     msg["From"] = settings.email_user
     msg["To"] = to_email
 
-    link = f"http://localhost:8000/users/resumes/{application.resume_id}"
+    # TODO change this to a FE url so it coud be visuallised nicely
+    link = f"{settings.backend_url}/users/resumes/{application.resume_id}"
     html_content = f"""
     <html>
         <body>
