@@ -1,3 +1,5 @@
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import smtplib
 from urllib.parse import quote
 
@@ -22,12 +24,28 @@ def send_verification_email(to_email: str, token: str):
 
 
 def send_job_application_email(to_email: str, application: ApplicationDto) -> None:
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = "New Application"
+    msg["From"] = settings.email_user
+    msg["To"] = to_email
+
+    link = f"http://localhost:8000/users/resumes/{application.resume_id}"
+    html_content = f"""
+    <html>
+        <body>
+            <p>You have a new job application.<br>
+            View it here: <a href="{link}">View Application</a>
+            </p>
+        </body>
+    </html>
+    """
+    msg.attach(MIMEText(html_content, "html"))
+
     with smtplib.SMTP(settings.email_host, settings.email_port) as connection:
         connection.starttls()
         connection.login(settings.email_user, settings.email_password)
-        link = f"<a href='https://yourdomain.com/resume/123{application.resume_id}'>application</a>"
         connection.sendmail(
             from_addr=settings.email_user,
             to_addrs=to_email,
-            msg=f"New job {link}".encode("utf-8"),
+            msg=msg.as_string(),
         )

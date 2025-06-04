@@ -10,6 +10,7 @@ class ResumeDto(BaseModel):
     title: str = ""
     file_name: str
     content_type: str
+    ext: str
     user_id: int
     content: bytes
 

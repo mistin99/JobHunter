@@ -112,8 +112,10 @@ class ResumeService:
             raise RuntimeError("File name is required")
 
         content = await file.read()
+        file_name, ext = file.filename.split(".", 1)
         return {
-            "file_name": file.filename.rsplit(".", 1)[0],
+            "file_name": file_name,
+            "ext": ext.lower(),
             "content_type": file.content_type,
             "content": content,
         }
