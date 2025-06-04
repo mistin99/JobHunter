@@ -25,18 +25,16 @@ def search(resume: ResumeSearchDto, db: Session = Depends(get_db)) -> JSONRespon
 
 
 @router.get("/resumes/{resume_id}")
-def get_resume_content(
-    resume_id: int,
-    user_id: int = Depends(get_current_user_id),
-    db: Session = Depends(get_db),
-):
+def get_resume_content(resume_id: int, db: Session = Depends(get_db)):
     service = ResumeService(db=db)
     resume = service.fetch_by_id(resume_id)
 
     return StreamingResponse(
         BytesIO(resume.content),
         media_type=resume.content_type,
-        headers={"Content-Disposition": f"attachment; filename={resume.title}"},
+        headers={
+            "Content-Disposition": f"inline; filename={resume.title}.{resume.ext}"
+        },
     )
 
 

@@ -15,10 +15,11 @@ class Resume(BaseEntity):
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True, index=True, nullable=False
     )
-    title: Mapped[str] = mapped_column(String(100))
-    file_name: Mapped[str] = mapped_column(String(50))
-    content_type: Mapped[str] = mapped_column(String(255))
-    content: Mapped[bytes] = mapped_column(LargeBinary)
+    title: Mapped[str] = mapped_column(String(100), nullable=False)
+    file_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    content_type: Mapped[str] = mapped_column(String(255), nullable=False)
+    ext: Mapped[str] = mapped_column(String(20), nullable=False)
+    content: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
 
     # Navigation properties
