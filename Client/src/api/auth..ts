@@ -16,13 +16,17 @@ interface SignInData {
 export const signUp = async (data: SignUpData) => {
   return axios.post('http://127.0.0.1:8000/auth/signup', data);
 };
-export const signIn = async (data:SignInData) => {
-  const response = await axios.post('http://127.0.0.1:8000/auth/signin', {data}, {
-    withCredentials: true 
+export const signIn = async (data: SignInData) => {
+  const response = await axios.post('http://127.0.0.1:8000/auth/signin', { data }, {
+    withCredentials: true
   });
-  
+
   const accessToken = response.data.token;
   localStorage.setItem('accessToken', accessToken);
 
   return accessToken;
+};
+
+export const refresh = async (data: SignUpData) => {
+  return axios.post('http://127.0.0.1:8000/auth/refresh', data);
 };

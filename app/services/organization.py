@@ -1,8 +1,5 @@
 from typing import Generator
 
-from sqlalchemy import and_, exists, select
-from sqlalchemy.orm import Query, Session
-
 from constants import Action, Role
 from dtos.organization import OrganizationDto
 from dtos.user import UserDto
@@ -11,6 +8,8 @@ from entities.job_offer import JobOffer
 from entities.organization import Organization
 from entities.user import User
 from services.user import UserService
+from sqlalchemy import and_, exists, select
+from sqlalchemy.orm import Query, Session
 
 
 class OrganizationService:
@@ -100,6 +99,8 @@ class OrganizationService:
         )
         self.db.add(entity)
         self.db.flush()
+        print(user_id)
+        print(entity)
         self._set_owner(user_id, entity.id)
         self.db.refresh(entity)
         return OrganizationDto.model_validate(entity)

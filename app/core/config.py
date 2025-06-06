@@ -8,8 +8,8 @@ class Settings(BaseSettings):
     )
 
     database_url: str
-    backend_url: AnyHttpUrl | None = None
-    frontend_url: AnyHttpUrl | None = None
+    backend_url: str | None = None
+    frontend_url: str | None = None
     secret_key: str
     algorithm: str
     access_token_expire_seconds: int
@@ -21,12 +21,12 @@ class Settings(BaseSettings):
     email_password: str
 
     @property
-    def origins(self) -> list[AnyHttpUrl]:
+    def origins(self) -> list[str]:
         urls = []
         if self.frontend_url:
-            urls.append(self.frontend_url)
+            urls += [url.strip() for url in self.frontend_url.split(",")]
         if self.backend_url:
-            urls.append(self.backend_url)
+            urls += [url.strip() for url in self.backend_url.split(",")]
         return urls
 
 

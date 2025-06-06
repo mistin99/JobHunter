@@ -1,22 +1,25 @@
 import { Box } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'; // Add useNavigate to navigate on job select
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../components/Header';
-import SidebarDrawer from '../components/Sidebar';
-
 import JobDetails from '../components/JobDetails';
 import JobList from '../components/JobList';
 import OrganizationDetails from '../components/OrganizationDetails';
+import SidebarDrawer from '../components/Sidebar';
+
+import { GetJobOfferById } from '../api/job_offers';
+import { GetOrganization } from '../api/organization';
 
 interface Job {
   id: number;
   title: string;
-  organization_id: string;
+  organization_id: number;
   description: string;
+  tags?: string[];
 }
 
 interface Organization {
-  id: string;
+  id: number;
   name: string;
   location: string;
   website: string;
@@ -25,48 +28,61 @@ interface Organization {
 
 const drawerWidth = 240;
 
-const jobsData: Job[] = [
-  { id: 1, title: 'Python Developer', organization_id: '12345', description: `At HRS we believe...` },
-  { id: 2, title: 'Frontend Developer', organization_id: 'Tech Corp', description: 'Build and maintain...' },
-  { id: 3, title: 'Backend Engineer', organization_id: 'Dev Solutions', description: 'Develop scalable backend services...' },
-  { id: 4, title: 'Full Stack Developer', organization_id: 'Webify', description: 'Work on both client-side and server-side...' },
-  { id: 5, title: 'Data Scientist', organization_id: 'Insight Analytics', description: 'Analyze large datasets...' },
-];
-
-const organizationsData: Organization[] = [
-  { id: '12345', name: 'HRS', location: 'New York, USA', website: 'https://hrs.com', description: 'A leading tech company specializing in HR solutions.' },
-  { id: 'Tech Corp', name: 'Tech Corp', location: 'San Francisco, USA', website: 'https://techcorp.com', description: 'Innovative software and hardware products.' },
-  { id: 'Dev Solutions', name: 'Dev Solutions', location: 'Austin, USA', website: 'https://devsolutions.io', description: 'Backend and cloud infrastructure experts.' },
-  { id: 'Webify', name: 'Webify', location: 'Seattle, USA', website: 'https://webify.co', description: 'Full stack web development agency.' },
-  { id: 'Insight Analytics', name: 'Insight Analytics', location: 'Boston, USA', website: 'https://insightanalytics.com', description: 'Data science and big data analytics firm.' },
-];
-
 export default function JobDetailsPage() {
   const { jobId } = useParams<{ jobId: string }>();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const navigate = useNavigate();
+  const [job, setJob] = useState<Job | null>(null);
+  const [organization, setOrganization] = useState<Organization | null>(null);
 
+  const navigate = useNavigate();
   const handleDrawerToggle = () => setDrawerOpen(!drawerOpen);
 
-  // Create org ID to name map for JobList
-  const organizationsMap = organizationsData.reduce<Record<string, string>>((map, org) => {
-    map[org.id] = org.name;
-    return map;
-  }, {});
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!jobId) return;
 
-  const job = jobsData.find((j) => j.id === Number(jobId));
-  const organization = job ? organizationsData.find((org) => org.id === job.organization_id) : null;
+        const jobResponse = await GetJobOfferById(Number(jobId));
+        const jobData = Array.isArray(jobResponse.data)
+          ? jobResponse.data[0]
+          : jobResponse.data;
+        setJob(jobData);
 
-  // On selecting a job, navigate to its detail page
+        const orgResponse = await GetOrganization(jobData.organization_id);
+        const orgData = Array.isArray(orgResponse.data)
+          ? orgResponse.data[0]
+          : orgResponse.data;
+
+        console.log('Organization used:', orgData);
+        setOrganization(orgData);
+      } catch (error) {
+        console.error('Error fetching job or organization:', error);
+      }
+    };
+
+    fetchData();
+  }, [jobId]);
+
   const onJobSelect = (selectedJob: Job) => {
     navigate(`/jobs/${selectedJob.id}`);
   };
 
+  const organizationsMap = organization
+    ? { [organization.id]: organization.name }
+    : {};
+  if (job) {
+    console.log("Passing to JobList:", job, organizationsMap);
+  }
   return (
+
     <Box sx={{ width: '100%', minWidth: '100vw' }}>
       <Header onMenuClick={handleDrawerToggle} />
 
-      <SidebarDrawer open={drawerOpen} handleDrawerToggle={handleDrawerToggle} drawerWidth={drawerWidth} />
+      <SidebarDrawer
+        open={drawerOpen}
+        handleDrawerToggle={handleDrawerToggle}
+        drawerWidth={drawerWidth}
+      />
 
       <Box
         component="main"
@@ -81,7 +97,7 @@ export default function JobDetailsPage() {
           gap: 3,
         }}
       >
-        {job && <JobDetails job={job} />}
+        {job && <JobDetails job={job} organizationName={organization?.name} />}
 
         <Box
           sx={{

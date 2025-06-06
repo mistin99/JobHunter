@@ -1,8 +1,5 @@
 from typing import Generator
 
-from sqlalchemy import and_, exists, select
-from sqlalchemy.orm import Query, Session
-
 from constants import Role
 from dtos.job_offer import ApplicationDto, JobOfferDto, JobTagDto
 from entities.job_offer import JobOffer, job_offers_tags
@@ -10,6 +7,8 @@ from entities.job_tag import JobTag
 from entities.user import UserApplication
 from services.resume import ResumeService
 from services.user import UserService
+from sqlalchemy import and_, exists, select
+from sqlalchemy.orm import Query, Session
 
 
 class JobOfferService:

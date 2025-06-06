@@ -1,7 +1,6 @@
-from pydantic import BaseModel, ConfigDict, Field
-
 from constants import Status
 from dtos.user import UserDto
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AddressDto(BaseModel):
@@ -25,7 +24,7 @@ class OrganizationDto(BaseModel):
     website_url: str
     description: str
     address: AddressDto
-    member_ids: list[int] = Field(default_factory=list)
+    #member_ids: list[int] = Field(default_factory=list)
 
 
 class OrganizationSearchDto(BaseModel):

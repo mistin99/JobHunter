@@ -1,9 +1,8 @@
 from typing import Annotated
 
-from pydantic import BaseModel, BeforeValidator, ConfigDict, EmailStr, Field
-
-from constants import Role, Status
 import dtos.validators as validators
+from constants import Role, Status
+from pydantic import BaseModel, BeforeValidator, ConfigDict, EmailStr, Field
 
 
 class RoleDto(BaseModel):

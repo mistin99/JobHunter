@@ -1,13 +1,11 @@
 from io import BytesIO
 
-from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, status
-from fastapi.responses import JSONResponse, StreamingResponse
-from sqlalchemy.orm import Session
-
 from database import get_db
 from dtos.resume import ResumeSearchDto
-
+from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, status
+from fastapi.responses import JSONResponse, StreamingResponse
 from services.resume import ResumeService
+from sqlalchemy.orm import Session
 from utils import get_current_user_id, transactional
 
 router = APIRouter()

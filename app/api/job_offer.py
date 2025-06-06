@@ -1,14 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
-
 from database import get_db
 from dtos.job_offer import ApplicationDto, JobOfferDto, JobOfferSearchDto
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from services.email import send_job_application_email
 from services.job_offer import JobOfferService
 from services.organization import OrganizationService
+from sqlalchemy.orm import Session
 from utils import get_current_user_id, transactional
-from fastapi.encoders import jsonable_encoder
 
 router = APIRouter()
 

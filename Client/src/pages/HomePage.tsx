@@ -1,19 +1,23 @@
 import { Box } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GetAllJobOffers } from '../api/job_offers';
+import { GetAllOrganizations } from '../api/organization';
 import Header from '../components/Header';
 import JobList from '../components/JobList';
 import SidebarDrawer from '../components/Sidebar';
 
+
 interface Job {
   id: number;
   title: string;
-  organization_id: string;
+  organization_id: number;
   description: string;
+  tags: string[];
 }
 
 interface Organization {
-  id: string;
+  id: number;
   name: string;
   location: string;
   website: string;
@@ -22,65 +26,45 @@ interface Organization {
 
 const drawerWidth = 240;
 
-const jobsData: Job[] = [
-  {
-    id: 1,
-    title: 'Python Developer',
-    organization_id: '12345',
-    description: `At HRS we believe...`,
-  },
-  {
-    id: 2,
-    title: 'Frontend Developer',
-    organization_id: 'Tech Corp',
-    description: 'Build and maintain...',
-  },
-  {
-    id: 3,
-    title: 'Backend Engineer',
-    organization_id: 'Dev Solutions',
-    description: 'Develop scalable backend services...',
-  },
-  {
-    id: 4,
-    title: 'Full Stack Developer',
-    organization_id: 'Webify',
-    description: 'Work on both client-side and server-side...',
-  },
-  {
-    id: 5,
-    title: 'Data Scientist',
-    organization_id: 'Insight Analytics',
-    description: 'Analyze large datasets...',
-  },
-];
-
-const organizationsData: Organization[] = [
-  { id: '12345', name: 'HRS', location: 'New York', website: '', description: '' },
-  { id: 'Tech Corp', name: 'Tech Corp', location: 'SF', website: '', description: '' },
-  { id: 'Dev Solutions', name: 'Dev Solutions', location: 'Austin', website: '', description: '' },
-  { id: 'Webify', name: 'Webify', location: 'Seattle', website: '', description: '' },
-  { id: 'Insight Analytics', name: 'Insight Analytics', location: 'Boston', website: '', description: '' },
-];
 
 export default function HomePage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const handleDrawerToggle = () => setDrawerOpen(!drawerOpen);
-  const [jobs] = useState<Job[]>(jobsData);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [jobsResponse, organizationsResponse] = await Promise.all([
+          GetAllJobOffers(),
+          GetAllOrganizations(),
+        ]);
+        setJobs(jobsResponse.data);
+        setOrganizations(organizationsResponse.data);
+      } catch (error) {
+        console.error('Failed to fetch jobs or organizations:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
 
   const handleJobClick = (job: Job) => {
     navigate(`/jobs/${job.id}`);
   };
 
-  const organizationsMap = organizationsData.reduce<Record<string, string>>((map, org) => {
+  const organizationsMap = organizations.reduce<Record<number, string>>((map, org) => {
     map[org.id] = org.name;
     return map;
   }, {});
 
   return (
-    <Box sx={{ width: '100%', mb: 1, minWidth: '100vw' }}>
+    <Box sx={{ width: '100%', mb: 1, minWidth: '100vw',minHeight:"100vw"}}>
       <Header onMenuClick={handleDrawerToggle} />
 
       <SidebarDrawer
@@ -96,6 +80,7 @@ export default function HomePage() {
           p: 3,
           backgroundColor: '#F3F4F6',
           overflowY: 'auto',
+          minHeight:"100vw"
         }}
       >
         <JobList jobs={jobs} organizationsMap={organizationsMap} onJobSelect={handleJobClick} />

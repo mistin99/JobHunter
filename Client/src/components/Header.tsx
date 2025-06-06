@@ -13,23 +13,21 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     const [signInOpen, setSignInOpen] = useState(false);
     const [signUpOpen, setSignUpOpen] = useState(false);
 
-    // Check token in localStorage on component mount
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('accessToken');
         if (token) {
             setIsLoggedIn(true);
         }
     }, []);
 
     // Called on successful sign in, receive token and save it
-    const handleSignInSuccess = (token: string) => {
-        localStorage.setItem('token', token);
+    const handleSignInSuccess = () => {
         setIsLoggedIn(true);
         setSignInOpen(false);
     };
 
     const handleSignOut = () => {
-        localStorage.removeItem('token');
+        localStorage.removeItem('accessToken');
         setIsLoggedIn(false);
         alert('Logged out');
     };
