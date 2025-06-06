@@ -9,9 +9,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { refresh } from '../api/auth.';
 import { createOrg } from '../api/organization'; // Adjust path if needed
-import { uploadResume } from '../api/user';
+import { getMyResumes, uploadResume } from '../api/user';
 import CreateOrganizationModal from '../components/CreateOrganizationModal';
 import Header from '../components/Header';
+import ResumePreviewModal from '../components/Resume';
 import SidebarDrawer from '../components/Sidebar';
 
 type User = {
@@ -55,6 +56,26 @@ const ProfilePage: React.FC = () => {
   const handleDrawerToggle = () => setDrawerOpen(!drawerOpen);
   const handleDialogOpen = () => setCreateDialogOpen(true);
   const handleDialogClose = () => setCreateDialogOpen(false);
+  const [resumeId, setResumeId] = useState<number | null>(null);
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
+
+  const handleViewResume = async () => {
+    try {
+      const response = await getMyResumes();
+      const resumes = response.data;
+
+      if (resumes.length === 0) {
+        alert('No resumes found.');
+        return;
+      }
+
+      setResumeId(resumes[0].id);
+      setResumeModalOpen(true);
+    } catch (error) {
+      console.error('Error loading resume:', error);
+      alert('Could not load resume');
+    }
+  };
 
   const handleCreateOrganization = async (organizationData: any, addressData: any) => {
     const OrganizationData = {
@@ -167,6 +188,15 @@ const ProfilePage: React.FC = () => {
             {uploading ? 'Uploading...' : 'Upload Resume'}
           </Button>
         </label>
+        <Button variant="outlined" onClick={handleViewResume}>
+          View Uploaded Resume
+        </Button>
+
+        <ResumePreviewModal
+          open={resumeModalOpen}
+          onClose={() => setResumeModalOpen(false)}
+          resumeId={resumeId ?? -1}
+        />
         <Typography variant="h5" gutterBottom>Organization</Typography>
         {user.organization_id ? (
           <Button

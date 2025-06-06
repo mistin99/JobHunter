@@ -38,4 +38,5 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/signin")
 
 def get_current_user_id(token: str = Depends(oauth2_scheme)):
     from services.auth import AuthService
+    print(token)
     return AuthService.verify_token(token, TokenType.ACCESS)

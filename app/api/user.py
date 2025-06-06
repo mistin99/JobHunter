@@ -36,6 +36,7 @@ def get_resume_content(resume_id: int, db: Session = Depends(get_db)):
     )
 
 
+
 @router.post("/resumes/upload")
 @transactional
 async def upload_resume(

@@ -11,3 +11,11 @@ export const uploadResume = async (formData: FormData) => {
         withCredentials: true,
     });
 };
+
+export const getMyResumes = async () => {
+    return axios.get('http://127.0.0.1:8000/users/resumes/2', {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
+};
