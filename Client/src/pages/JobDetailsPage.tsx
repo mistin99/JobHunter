@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import JobDetails from '../components/JobDetails';
-import JobList from '../components/JobList';
-import OrganizationDetails from '../components/OrganizationDetails';
 import SidebarDrawer from '../components/Sidebar';
 
 import { GetJobOfferById } from '../api/job_offers';
@@ -109,14 +107,7 @@ export default function JobDetailsPage() {
             maxWidth: 800,
           }}
         >
-          {organization && <OrganizationDetails organization={organization} />}
-          {job && (
-            <JobList
-              jobs={[job]}
-              organizationsMap={organizationsMap}
-              onJobSelect={onJobSelect}
-            />
-          )}
+
         </Box>
       </Box>
     </Box>
