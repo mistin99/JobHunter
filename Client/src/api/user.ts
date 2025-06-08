@@ -13,9 +13,24 @@ export const uploadResume = async (formData: FormData) => {
 };
 
 export const getMyResumes = async () => {
-    return axios.get('http://127.0.0.1:8000/users/resumes/2', {
+    const accessToken = localStorage.getItem('accessToken');
+    const userId = localStorage.getItem('User_id');
+
+    if (!accessToken) {
+        throw new Error('No access token found');
+    }
+    if (!userId) {
+        throw new Error('No user ID found');
+    }
+
+    const response = await axios.post('http://127.0.0.1:8000/users/resumes/', {
         headers: {
             Authorization: `Bearer ${accessToken}`,
         },
     });
+
+    const myResumes = response.data.filter((resume: any) => resume.user_id.toString() === userId);
+
+    return myResumes;
 };
+

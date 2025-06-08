@@ -1,7 +1,8 @@
 import { Box, Button, Chip, Typography } from '@mui/material';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getMyResumes } from '../api/user';
 
 interface JobDetailsProps {
   job: {
@@ -14,9 +15,40 @@ interface JobDetailsProps {
   organizationName?: string;
 }
 
+interface Resume {
+  id: number;
+  user_id: number;
+  // други полета при нужда
+}
+
 export default function JobDetails({ job, organizationName }: JobDetailsProps) {
   const navigate = useNavigate();
   const [applying, setApplying] = useState(false);
+  const [resumeId, setResumeId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchMyResume = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const userId = Number(localStorage.getItem('User_id'));
+        if (!token || !userId) return;
+
+        const resumels = await getMyResumes();
+        const myResume = resumels[0];
+        console.log(myResume);
+
+        if (myResume) {
+          setResumeId(myResume.id);
+        } else {
+          console.warn('Няма намерено резюме за потребител', userId);
+        }
+      } catch (error) {
+        console.error('Грешка при извличане на автобиографии:', error);
+      }
+    };
+
+    fetchMyResume();
+  }, []);
 
   const handleApply = async () => {
     setApplying(true);
@@ -24,12 +56,17 @@ export default function JobDetails({ job, organizationName }: JobDetailsProps) {
     try {
       const token = localStorage.getItem('accessToken');
       if (!token) {
-        alert('You must be logged in to apply.');
+        alert('Трябва да сте влезли в системата, за да кандидатствате.');
+        setApplying(false);
+        return;
+      }
+      if (!resumeId) {
+        alert('Не е намерено вашето резюме. Моля, качете резюме, за да кандидатствате.');
+        setApplying(false);
         return;
       }
 
-      const resumeId = 3; // Replace with real resume ID logic
-      const response = await axios.post(
+      await axios.post(
         'http://127.0.0.1:8000/job-offers/apply',
         {
           resume_id: resumeId,
@@ -43,12 +80,12 @@ export default function JobDetails({ job, organizationName }: JobDetailsProps) {
         }
       );
 
-      alert('Application submitted successfully!');
+      alert('Кандидатурата е изпратена успешно!');
     } catch (error: any) {
-      console.error('Error applying to job:', error);
+      console.error('Грешка при кандидатстване за работа:', error);
       alert(
         error.response?.data?.detail ||
-          'An error occurred while applying. Please try again.'
+        'Възникна грешка при кандидатстване. Моля, опитайте отново.'
       );
     } finally {
       setApplying(false);
@@ -98,10 +135,10 @@ export default function JobDetails({ job, organizationName }: JobDetailsProps) {
           onClick={handleApply}
           disabled={applying}
         >
-          {applying ? 'Applying...' : 'Apply'}
+          {applying ? 'Кандидатстване...' : 'Кандидатствай'}
         </Button>
         <Button variant="outlined" onClick={() => navigate(-1)}>
-          Back
+          Назад
         </Button>
       </Box>
     </Box>

@@ -6,12 +6,12 @@ interface Job {
   title: string;
   description: string;
   tags?: string[];
-  organization_id: number; // ✅ FIXED: Added organization_id
+  organization_id: number;
 }
 
 interface JobListProps {
   jobs: Job[];
-  organizationsMap: Record<number, string>; // ✅ FIXED: keys are numbers, not strings
+  organizationsMap: Record<number, string>;
   onJobSelect: (job: Job) => void;
 }
 
@@ -37,7 +37,7 @@ const JobList: React.FC<JobListProps> = ({ jobs, organizationsMap, onJobSelect }
             {job.title}
           </Typography>
           <Typography variant="subtitle2" sx={{ color: '#6b7280', mb: 1 }}>
-            {organizationsMap[job.organization_id] || 'Unknown Organization'}
+            {organizationsMap[job.organization_id] || 'Неизвестна организация'}
           </Typography>
           <Typography variant="body2" sx={{ color: '#374151', mb: 1 }}>
             {job.description}

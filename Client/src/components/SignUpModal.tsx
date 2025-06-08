@@ -25,15 +25,14 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ open, onClose, onSwitchToSign
                 password,
             });
 
-            alert('Account created!');
+            alert('Акаунтът беше създаден!');
             onSwitchToSignIn();
         } catch (error) {
-            alert('Sign up failed.');
+            alert('Регистрацията не беше успешна.');
             console.error(error);
         }
     };
 
-    // Handle Enter key press to trigger sign up
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -45,7 +44,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ open, onClose, onSwitchToSign
         <Modal open={open} onClose={onClose}>
             <Box
                 component={Paper}
-                onKeyDown={handleKeyDown}  // Listen for Enter key here
+                onKeyDown={handleKeyDown}
                 sx={{
                     position: 'absolute',
                     top: '50%',
@@ -57,13 +56,13 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ open, onClose, onSwitchToSign
                 }}
             >
                 <Typography variant="h6" textAlign="center" mb={2}>
-                    Sign Up
+                    Регистрация
                 </Typography>
                 <Stack spacing={2}>
-                    <TextField label="First Name" fullWidth value={first_name} onChange={e => setFirstName(e.target.value)} />
-                    <TextField label="Last Name" fullWidth value={last_name} onChange={e => setLastName(e.target.value)} />
+                    <TextField label="Име" fullWidth value={first_name} onChange={e => setFirstName(e.target.value)} />
+                    <TextField label="Фамилия" fullWidth value={last_name} onChange={e => setLastName(e.target.value)} />
                     <TextField
-                        label="Phone Number"
+                        label="Телефонен номер"
                         type="tel"
                         fullWidth
                         value={phone_number}
@@ -73,16 +72,16 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ open, onClose, onSwitchToSign
                         }}
                         inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                     />
-                    <TextField label="Email" fullWidth value={email} onChange={e => setEmail(e.target.value)} />
-                    <TextField label="Password" type="password" fullWidth value={password} onChange={e => setPassword(e.target.value)} />
+                    <TextField label="Имейл" fullWidth value={email} onChange={e => setEmail(e.target.value)} />
+                    <TextField label="Парола" type="password" fullWidth value={password} onChange={e => setPassword(e.target.value)} />
                     <Button variant="contained" onClick={handleSignUp}>
-                        Create Account
+                        Създай акаунт
                     </Button>
                     <Button variant="text" onClick={onSwitchToSignIn}>
-                        Already have an account? Sign In
+                        Вече имаш акаунт? Вход
                     </Button>
                     <Button variant="text" onClick={onClose}>
-                        Cancel
+                        Отказ
                     </Button>
                 </Stack>
             </Box>

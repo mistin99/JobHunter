@@ -8,7 +8,7 @@ import {
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { refresh } from '../api/auth.';
-import { createOrg } from '../api/organization'; // Adjust path if needed
+import { createOrg } from '../api/organization';
 import { getMyResumes, uploadResume } from '../api/user';
 import CreateOrganizationModal from '../components/CreateOrganizationModal';
 import Header from '../components/Header';
@@ -65,15 +65,15 @@ const ProfilePage: React.FC = () => {
       const resumes = response.data;
 
       if (resumes.length === 0) {
-        alert('No resumes found.');
+        alert('Няма намерени автобиографии.');
         return;
       }
 
       setResumeId(resumes[0].id);
       setResumeModalOpen(true);
     } catch (error) {
-      console.error('Error loading resume:', error);
-      alert('Could not load resume');
+      console.error('Грешка при зареждане на автобиография:', error);
+      alert('Неуспешно зареждане на автобиография');
     }
   };
 
@@ -87,10 +87,9 @@ const ProfilePage: React.FC = () => {
     };
 
     try {
-      // First attempt
       const response = await createOrg(OrganizationData);
 
-      console.log('Organization created:', response.data);
+      console.log('Организацията е създадена:', response.data);
 
       const orgId = response.data.organization?.id ?? null;
 
@@ -102,17 +101,16 @@ const ProfilePage: React.FC = () => {
       localStorage.setItem('user', JSON.stringify({ ...user, organization_id: orgId }));
 
       handleDialogClose();
-
     } catch (error: any) {
-      console.error('Error creating organization:', error.response?.status, error.response?.data || error.message);
+      console.error('Грешка при създаване на организация:', error.response?.status, error.response?.data || error.message);
 
       try {
-        console.log("Fetching new token")
+        console.log("Обновяване на токена...");
         await refresh();
 
         const retryResponse = await createOrg(OrganizationData);
 
-        console.log('Organization created after token refresh:', retryResponse.data);
+        console.log('Организацията е създадена след обновяване на токена:', retryResponse.data);
 
         const orgId = retryResponse.data.organization?.id ?? null;
 
@@ -124,9 +122,8 @@ const ProfilePage: React.FC = () => {
         localStorage.setItem('user', JSON.stringify({ ...user, organization_id: orgId }));
 
         handleDialogClose();
-
       } catch (refreshError: any) {
-        console.error('Token refresh failed:', refreshError.response?.data || refreshError.message);
+        console.error('Неуспешно обновяване на токен:', refreshError.response?.data || refreshError.message);
       }
     }
   };
@@ -145,17 +142,15 @@ const ProfilePage: React.FC = () => {
 
       const response = await uploadResume(formData);
 
-      console.log('Uploaded resume:', response.data);
-      alert('Resume uploaded successfully!');
+      console.log('Автобиографията е качена:', response.data);
+      alert('Автобиографията беше успешно качена!');
     } catch (error: any) {
-      console.error('Error uploading resume:', error);
-      alert(error.response?.data?.detail || 'Upload failed');
+      console.error('Грешка при качване:', error);
+      alert(error.response?.data?.detail || 'Качването не бе успешно');
     } finally {
       setUploading(false);
     }
   };
-
-
 
   return (
     <Box sx={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
@@ -164,18 +159,18 @@ const ProfilePage: React.FC = () => {
 
       <Paper sx={{ flex: 1, borderRadius: 0, p: 4, width: '100%', height: '100%' }}>
         <Typography variant="h4" gutterBottom>
-          Profile Information
+          Профилна информация
         </Typography>
         <Divider sx={{ mb: 3 }} />
-        <Typography variant="subtitle1"><strong>First Name:</strong> {user.first_name}</Typography>
-        <Typography variant="subtitle1"><strong>Last Name:</strong> {user.last_name}</Typography>
-        <Typography variant="subtitle1"><strong>Email:</strong> {user.email}</Typography>
-        <Typography variant="subtitle1"><strong>Phone Number:</strong> {user.phone_number}</Typography>
+        <Typography variant="subtitle1"><strong>Име:</strong> {user.first_name}</Typography>
+        <Typography variant="subtitle1"><strong>Фамилия:</strong> {user.last_name}</Typography>
+        <Typography variant="subtitle1"><strong>Имейл:</strong> {user.email}</Typography>
+        <Typography variant="subtitle1"><strong>Телефон:</strong> {user.phone_number}</Typography>
 
         <Divider sx={{ my: 4 }} />
         <Divider sx={{ my: 4 }} />
 
-        <Typography variant="h5" gutterBottom>Upload Resume</Typography>
+        <Typography variant="h5" gutterBottom>Качване на автобиография</Typography>
         <input
           type="file"
           accept=".pdf,.doc,.docx"
@@ -185,11 +180,11 @@ const ProfilePage: React.FC = () => {
         />
         <label htmlFor="resume-upload">
           <Button variant="contained" component="span" disabled={uploading}>
-            {uploading ? 'Uploading...' : 'Upload Resume'}
+            {uploading ? 'Качване...' : 'Качи автобиография'}
           </Button>
         </label>
         <Button variant="outlined" onClick={handleViewResume}>
-          View Uploaded Resume
+          Преглед на качена автобиография
         </Button>
 
         <ResumePreviewModal
@@ -197,18 +192,19 @@ const ProfilePage: React.FC = () => {
           onClose={() => setResumeModalOpen(false)}
           resumeId={resumeId ?? -1}
         />
-        <Typography variant="h5" gutterBottom>Organization</Typography>
+
+        <Typography variant="h5" gutterBottom>Организация</Typography>
         {user.organization_id ? (
           <Button
             variant="contained"
             color="primary"
             onClick={() => navigate(`/organization/${user.organization_id}`)}
           >
-            Display Organization Details
+            Преглед на организация
           </Button>
         ) : (
           <Button variant="outlined" color="primary" onClick={handleDialogOpen}>
-            Create Organization
+            Създай организация
           </Button>
         )}
       </Paper>

@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     const handleSignOut = () => {
         localStorage.removeItem('accessToken');
         setIsLoggedIn(false);
-        alert('Logged out');
+        alert('Излязохте от системата');
     };
 
     return (
@@ -46,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                         <MenuIcon sx={{ color: '#1E3A8A' }} />
                     </IconButton>
                     <Typography variant="h4" component="div" sx={{ color: '#1E3A8A' }}>
-                        Job Finder
+                        Талант+
                     </Typography>
                     <Box>
                         {isLoggedIn ? (
@@ -54,14 +54,14 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                                 sx={{ backgroundColor: '#CBD5E1', color: '#1E3A8A', mr: 1, '&:hover': { backgroundColor: '#94A3B8' } }}
                                 onClick={handleSignOut}
                             >
-                                Sign Out
+                                Изход
                             </Button>
                         ) : (
                             <Button
                                 sx={{ backgroundColor: '#CBD5E1', color: '#1E3A8A', mr: 1, '&:hover': { backgroundColor: '#94A3B8' } }}
                                 onClick={() => setSignInOpen(true)}
                             >
-                                Sign In
+                                Вход
                             </Button>
                         )}
                     </Box>
@@ -71,7 +71,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             <Authentication
                 open={signInOpen}
                 onClose={() => setSignInOpen(false)}
-                onSignInSuccess={handleSignInSuccess} // Make sure Authentication calls with token
+                onSignInSuccess={handleSignInSuccess}
                 onSwitchToSignUp={() => {
                     setSignInOpen(false);
                     setSignUpOpen(true);

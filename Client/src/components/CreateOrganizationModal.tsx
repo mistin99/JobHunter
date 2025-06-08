@@ -79,31 +79,31 @@ const CreateOrganizationModal: React.FC<Props> = ({ open, onClose, onSubmit }) =
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Create Organization</DialogTitle>
+      <DialogTitle>Създаване на организация</DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
         <TextField
-          label="Name"
+          label="Име"
           name="name"
           value={organizationData.name}
           onChange={handleOrganizationChange}
           fullWidth
         />
         <TextField
-          label="Email"
+          label="Имейл"
           name="email"
           value={organizationData.email}
           onChange={handleOrganizationChange}
           fullWidth
         />
         <TextField
-          label="Website URL"
+          label="Уебсайт (URL)"
           name="website_url"
           value={organizationData.website_url}
           onChange={handleOrganizationChange}
           fullWidth
         />
         <TextField
-          label="Description"
+          label="Описание"
           name="description"
           value={organizationData.description}
           onChange={handleOrganizationChange}
@@ -113,37 +113,37 @@ const CreateOrganizationModal: React.FC<Props> = ({ open, onClose, onSubmit }) =
         />
 
         <Divider sx={{ my: 2 }} />
-        <Typography variant="subtitle1">Address</Typography>
+        <Typography variant="subtitle1">Адрес</Typography>
         <TextField
-          label="Street Line 1"
+          label="Улица (ред 1)"
           name="street_line1"
           value={addressData.street_line1}
           onChange={handleAddressChange}
           fullWidth
         />
         <TextField
-          label="Street Line 2"
+          label="Улица (ред 2)"
           name="street_line2"
           value={addressData.street_line2}
           onChange={handleAddressChange}
           fullWidth
         />
         <TextField
-          label="City"
+          label="Град"
           name="city"
           value={addressData.city}
           onChange={handleAddressChange}
           fullWidth
         />
         <TextField
-          label="Country"
+          label="Държава"
           name="country"
           value={addressData.country}
           onChange={handleAddressChange}
           fullWidth
         />
         <TextField
-          label="Postal Code"
+          label="Пощенски код"
           name="zip_code"
           value={addressData.zip_code}
           onChange={handleAddressChange}
@@ -151,9 +151,9 @@ const CreateOrganizationModal: React.FC<Props> = ({ open, onClose, onSubmit }) =
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>Отказ</Button>
         <Button variant="contained" onClick={handleSubmit}>
-          Create
+          Създай
         </Button>
       </DialogActions>
     </Dialog>

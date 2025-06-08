@@ -6,7 +6,7 @@ interface AuthenticationProps {
     open: boolean;
     onClose: () => void;
     onSwitchToSignUp: () => void;
-    onSignInSuccess: (token: string) => void;  // <-- accept token param
+    onSignInSuccess: (token: string) => void; 
 }
 const Authentication: React.FC<AuthenticationProps> = ({ open, onClose, onSignInSuccess, onSwitchToSignUp }) => {
     const [email, setEmail] = useState('');
@@ -15,18 +15,17 @@ const Authentication: React.FC<AuthenticationProps> = ({ open, onClose, onSignIn
     const handleSignIn = async () => {
         try {
             const accessToken = await signIn({ email, password });
-            alert('Signed in successfully.');
-             onSignInSuccess(accessToken);;
+            alert('Успешно влязохте в системата.');
+            onSignInSuccess(accessToken);
         } catch (error) {
-            alert('Login failed. Please try again.');
+            alert('Входът не бе успешен. Моля, опитайте отново.');
             console.error(error);
         }
     };
 
-    // Keydown handler for Enter key
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === 'Enter') {
-            event.preventDefault(); // prevent form submit reload
+            event.preventDefault();
             handleSignIn();
         }
     };
@@ -35,7 +34,7 @@ const Authentication: React.FC<AuthenticationProps> = ({ open, onClose, onSignIn
         <Modal open={open} onClose={onClose}>
             <Box
                 component={Paper}
-                onKeyDown={handleKeyDown} // <-- Listen here for key presses
+                onKeyDown={handleKeyDown} 
                 sx={{
                     position: 'absolute',
                     top: '50%',
@@ -47,31 +46,31 @@ const Authentication: React.FC<AuthenticationProps> = ({ open, onClose, onSignIn
                 }}
             >
                 <Typography variant="h6" textAlign="center" mb={2}>
-                    Sign In
+                    Вход
                 </Typography>
                 <Stack spacing={2}>
                     <TextField
-                        label="Email"
+                        label="Имейл"
                         fullWidth
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         autoFocus
                     />
                     <TextField
-                        label="Password"
+                        label="Парола"
                         type="password"
                         fullWidth
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                     />
                     <Button variant="contained" onClick={handleSignIn}>
-                        Sign In
+                        Вход
                     </Button>
                     <Button variant="text" onClick={onSwitchToSignUp}>
-                        Don't have an account? Sign Up
+                        Нямате акаунт? Регистрирайте се
                     </Button>
                     <Button variant="text" onClick={onClose}>
-                        Cancel
+                        Отказ
                     </Button>
                 </Stack>
             </Box>

@@ -30,13 +30,13 @@ export default function OrganizationDetails({ organization }: OrganizationDetail
       }}
     >
       <Typography variant="h6" fontWeight="bold" mb={2}>
-        About {organization.name}
+        За {organization.name}
       </Typography>
       <Typography mb={1}>
-        <strong>Location:</strong> {organization.location}
+        <strong>Локация:</strong> {organization.location}
       </Typography>
       <Typography mb={1}>
-        <strong>Website:</strong>{' '}
+        <strong>Уебсайт:</strong>{' '}
         <a href={organization.website} target="_blank" rel="noopener noreferrer">
           {organization.website}
         </a>

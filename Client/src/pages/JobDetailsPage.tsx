@@ -53,10 +53,10 @@ export default function JobDetailsPage() {
           ? orgResponse.data[0]
           : orgResponse.data;
 
-        console.log('Organization used:', orgData);
+        console.log('Използвана организация:', orgData);
         setOrganization(orgData);
       } catch (error) {
-        console.error('Error fetching job or organization:', error);
+        console.error('Грешка при зареждане на обява или организация:', error);
       }
     };
 
@@ -70,11 +70,12 @@ export default function JobDetailsPage() {
   const organizationsMap = organization
     ? { [organization.id]: organization.name }
     : {};
-  if (job) {
-    console.log("Passing to JobList:", job, organizationsMap);
-  }
-  return (
 
+  if (job) {
+    console.log("Предаване към JobList:", job, organizationsMap);
+  }
+
+  return (
     <Box sx={{ width: '100%', minWidth: '100vw' }}>
       <Header onMenuClick={handleDrawerToggle} />
 

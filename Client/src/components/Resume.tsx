@@ -18,8 +18,7 @@ export default function ResumePreviewModal({ open, onClose, resumeId }: Props) {
 
     const fetchResumeBlob = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
-        const response = await getMyResumes()
+        const response = await getMyResumes();
 
         const fileBlob = new Blob([response.data], {
           type: response.headers['content-type'],
@@ -28,7 +27,7 @@ export default function ResumePreviewModal({ open, onClose, resumeId }: Props) {
         const url = URL.createObjectURL(fileBlob);
         setResumeUrl(url);
       } catch (error) {
-        console.error('Error fetching resume blob:', error);
+        console.error('Грешка при изтегляне на автобиографията:', error);
       }
     };
 
@@ -42,9 +41,9 @@ export default function ResumePreviewModal({ open, onClose, resumeId }: Props) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>
-        Resume Preview
+        Преглед на автобиография
         <IconButton
-          aria-label="close"
+          aria-label="затвори"
           onClick={onClose}
           sx={{ position: 'absolute', right: 8, top: 8 }}
         >
@@ -61,7 +60,7 @@ export default function ResumePreviewModal({ open, onClose, resumeId }: Props) {
             style={{ border: 'none' }}
           />
         ) : (
-          <p>Loading...</p>
+          <p>Зареждане...</p>
         )}
       </DialogContent>
     </Dialog>

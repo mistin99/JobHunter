@@ -7,7 +7,6 @@ import Header from '../components/Header';
 import JobList from '../components/JobList';
 import SidebarDrawer from '../components/Sidebar';
 
-
 interface Job {
   id: number;
   title: string;
@@ -25,7 +24,6 @@ interface Organization {
 }
 
 const drawerWidth = 240;
-
 
 export default function HomePage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -45,14 +43,12 @@ export default function HomePage() {
         setJobs(jobsResponse.data);
         setOrganizations(organizationsResponse.data);
       } catch (error) {
-        console.error('Failed to fetch jobs or organizations:', error);
+        console.error('Неуспешно зареждане на обяви или организации:', error);
       }
     };
 
     fetchData();
   }, []);
-
-
 
   const handleJobClick = (job: Job) => {
     navigate(`/jobs/${job.id}`);
@@ -64,7 +60,7 @@ export default function HomePage() {
   }, {});
 
   return (
-    <Box sx={{ width: '100%', mb: 1, minWidth: '100vw',minHeight:"100vw"}}>
+    <Box sx={{ width: '100%', mb: 1, minWidth: '100vw', minHeight: "100vw" }}>
       <Header onMenuClick={handleDrawerToggle} />
 
       <SidebarDrawer
@@ -80,10 +76,14 @@ export default function HomePage() {
           p: 3,
           backgroundColor: '#F3F4F6',
           overflowY: 'auto',
-          minHeight:"100vw"
+          minHeight: "100vw"
         }}
       >
-        <JobList jobs={jobs} organizationsMap={organizationsMap} onJobSelect={handleJobClick} />
+        <JobList
+          jobs={jobs}
+          organizationsMap={organizationsMap}
+          onJobSelect={handleJobClick}
+        />
       </Box>
     </Box>
   );

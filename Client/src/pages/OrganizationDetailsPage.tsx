@@ -72,7 +72,7 @@ const OrganizationDetailsPage: React.FC = () => {
                     setJobOffers(offersResponse.data ?? []);
                 }
             } catch (error) {
-                console.error('Error fetching organization or job offers:', error);
+                console.error('Грешка при зареждане на организация или обяви за работа:', error);
             }
         };
 
@@ -86,12 +86,12 @@ const OrganizationDetailsPage: React.FC = () => {
             organization_id: organization.id,
             title,
             description,
-            tags: tags.split(',').map(tag => tag.trim()), // Split comma-separated string into array
+            tags: tags.split(',').map(tag => tag.trim()),
         };
 
         try {
             const response = await CreateJobOffer(newJobOffer);
-            console.log("Created job offer:", response.data);
+            console.log("Създадена обява за работа:", response.data);
 
             const offersResponse = await GetOrganizationJobOffers(organization.id);
             setJobOffers(offersResponse.data ?? []);
@@ -100,13 +100,13 @@ const OrganizationDetailsPage: React.FC = () => {
             setDescription('');
             setTags('');
         } catch (error) {
-            console.error("Error creating job offer:", error);
-            alert("Failed to create job offer.");
+            console.error("Грешка при създаване на обява за работа:", error);
+            alert("Неуспешно създаване на обява за работа.");
         }
     };
 
     if (!organization) {
-        return <Typography sx={{ p: 4 }}>Organization not found or loading...</Typography>;
+        return <Typography sx={{ p: 4 }}>Организацията не е намерена или все още се зарежда...</Typography>;
     }
 
     return (
@@ -120,18 +120,18 @@ const OrganizationDetailsPage: React.FC = () => {
 
             <Paper sx={{ flex: 1, borderRadius: 0, p: 4, width: '100%', height: '100%', overflowY: 'auto' }}>
                 <Typography variant="h4" gutterBottom>
-                    Organization Details
+                    Детайли за организацията
                 </Typography>
                 <Divider sx={{ mb: 3 }} />
 
-                <Typography variant="subtitle1"><strong>Name:</strong> {organization.name}</Typography>
-                <Typography variant="subtitle1"><strong>Email:</strong> {organization.email}</Typography>
-                <Typography variant="subtitle1"><strong>Website:</strong> {organization.website_url}</Typography>
-                <Typography variant="subtitle1"><strong>Status:</strong> {organization.status}</Typography>
-                <Typography variant="subtitle1"><strong>Description:</strong> {organization.description}</Typography>
+                <Typography variant="subtitle1"><strong>Име:</strong> {organization.name}</Typography>
+                <Typography variant="subtitle1"><strong>Имейл:</strong> {organization.email}</Typography>
+                <Typography variant="subtitle1"><strong>Уебсайт:</strong> {organization.website_url}</Typography>
+                <Typography variant="subtitle1"><strong>Статус:</strong> {organization.status}</Typography>
+                <Typography variant="subtitle1"><strong>Описание:</strong> {organization.description}</Typography>
 
                 <Divider sx={{ my: 2 }} />
-                <Typography variant="h6">Address</Typography>
+                <Typography variant="h6">Адрес</Typography>
                 <Typography variant="body1">{organization.address.street_line1} {organization.address.street_line2}</Typography>
                 <Typography variant="body1">{organization.address.city}, {organization.address.country} {organization.address.zip_code}</Typography>
 
@@ -143,38 +143,38 @@ const OrganizationDetailsPage: React.FC = () => {
                     sx={{ mb: 3 }}
                     onClick={() => setModalOpen(true)}
                 >
-                    Create Job Offer
+                    Създай обява за работа
                 </Button>
 
                 <Typography variant="h5" gutterBottom>
-                    My Job Offers
+                    Моите обяви за работа
                 </Typography>
 
                 {jobOffers.length > 0 ? (
                     <JobList
                         jobs={jobOffers}
                         organizationsMap={{ [organization.id]: organization.name }}
-                        onJobSelect={(job) => alert(`Selected job: ${job.title}`)}
+                        onJobSelect={(job) => alert(`Избрана обява: ${job.title}`)}
                     />
                 ) : (
-                    <Typography>No job offers available.</Typography>
+                    <Typography>Няма налични обяви за работа.</Typography>
                 )}
             </Paper>
 
-            {/* MODAL DIALOG */}
+            {/* МОДАЛЕН ДИАЛОГ */}
             <Dialog open={modalOpen} onClose={() => setModalOpen(false)} fullWidth maxWidth="sm">
-                <DialogTitle>Create Job Offer</DialogTitle>
+                <DialogTitle>Създай обява за работа</DialogTitle>
                 <DialogContent>
                     <TextField
                         margin="dense"
-                        label="Title"
+                        label="Заглавие"
                         fullWidth
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <TextField
                         margin="dense"
-                        label="Description"
+                        label="Описание"
                         fullWidth
                         multiline
                         rows={3}
@@ -183,15 +183,15 @@ const OrganizationDetailsPage: React.FC = () => {
                     />
                     <TextField
                         margin="dense"
-                        label="Tags (comma separated)"
+                        label="Тагове (разделени със запетая)"
                         fullWidth
                         value={tags}
                         onChange={(e) => setTags(e.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setModalOpen(false)}>Cancel</Button>
-                    <Button onClick={handleCreateJobOffer} variant="contained" color="primary">Submit</Button>
+                    <Button onClick={() => setModalOpen(false)}>Отказ</Button>
+                    <Button onClick={handleCreateJobOffer} variant="contained" color="primary">Изпрати</Button>
                 </DialogActions>
             </Dialog>
         </Box>

@@ -24,6 +24,7 @@ export const signIn = async (data: SignInData) => {
 
   const accessToken = response.data.token;
   localStorage.setItem('accessToken', accessToken);
+  localStorage.setItem('User_id', response.data.user.id);
 
   return accessToken;
 };

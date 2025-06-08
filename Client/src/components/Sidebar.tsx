@@ -14,17 +14,17 @@ const SidebarDrawer: React.FC<SidebarDrawerProps> = ({ open, drawerWidth, handle
   const drawerContent = (
     <Box sx={{ width: drawerWidth, mt: '64px', bgcolor: '#F3F4F6', height: 'calc(100vh - 64px)' }}>
       <Typography variant="h6" sx={{ p: 2 }}>
-        Menu
+        Меню
       </Typography>
       <List>
         <ListItem disablePadding>
           <ListItemButton onClick={() => { navigate('/'); handleDrawerToggle(); }}>
-            <ListItemText primary="Home" />
+            <ListItemText primary="Начало" />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
           <ListItemButton onClick={() => { navigate('/profile'); handleDrawerToggle(); }}>
-            <ListItemText primary="Profile" />
+            <ListItemText primary="Профил" />
           </ListItemButton>
         </ListItem>
       </List>

@@ -12,7 +12,6 @@ function App() {
         <Route path="/jobs/:jobId" element={<JobDetailsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/organization/:orgId" element={<OrganizationDetailsPage />} />
-        {/* Add more routes as needed */}
       </Routes>
     </BrowserRouter>
   );
