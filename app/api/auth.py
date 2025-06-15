@@ -18,7 +18,6 @@ def signup(user: UserDto, db: Session = Depends(get_db)) -> JSONResponse:
     try:
         access_token, refresh_token, dto = service.signup(user)
     except LookupError as e:
-        print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST) from e
 
     response = JSONResponse(
@@ -38,14 +37,11 @@ def signup(user: UserDto, db: Session = Depends(get_db)) -> JSONResponse:
 @router.post("/signin")
 @transactional
 def signin(user: UserDto, db: Session = Depends(get_db)) -> JSONResponse:
-    print(user)
     service = AuthService(db=db)
     try:
         access_token, refresh_token, dto = service.signin(user)
     except LookupError as e:
-        print(e)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST) from e
-
     response = JSONResponse(
         content={"user": dto.model_dump(), "token": access_token},
         status_code=status.HTTP_200_OK,

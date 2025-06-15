@@ -28,7 +28,7 @@ const ProfilePage: React.FC = () => {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   const [user, setUser] = useState<User>(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem('User');
     if (storedUser) {
       try {
         return JSON.parse(storedUser);
@@ -183,9 +183,6 @@ const ProfilePage: React.FC = () => {
             {uploading ? 'Качване...' : 'Качи автобиография'}
           </Button>
         </label>
-        <Button variant="outlined" onClick={handleViewResume}>
-          Преглед на качена автобиография
-        </Button>
 
         <ResumePreviewModal
           open={resumeModalOpen}
