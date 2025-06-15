@@ -46,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                         <MenuIcon sx={{ color: '#1E3A8A' }} />
                     </IconButton>
                     <Typography variant="h4" component="div" sx={{ color: '#1E3A8A' }}>
-                        Талант+
+                        JobHunter
                     </Typography>
                     <Box>
                         {isLoggedIn ? (
