@@ -39,9 +39,7 @@ export default function JobDetailsPage() {
     const fetchData = async () => {
       try {
         if (!jobId) return;
-        console.log(jobId)
         const jobResponse = await GetJobOfferById(Number(jobId));
-        console.log(jobResponse)
         const jobData = Array.isArray(jobResponse.data)
           ? jobResponse.data.find((job: Job) => job.id === Number(jobId))
           : jobResponse.data;

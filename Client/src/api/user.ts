@@ -14,8 +14,10 @@ export const uploadResume = async (formData: FormData) => {
 
 export const getMyResumes = async () => {
     const accessToken = localStorage.getItem('accessToken');
-    const userId = localStorage.getItem('User_id');
-
+    const user_json = localStorage.getItem('User');
+    if (!accessToken || !user_json) return;
+    const user = JSON.parse(user_json);
+    const userId = user.id;
     if (!accessToken) {
         throw new Error('No access token found');
     }
@@ -28,8 +30,7 @@ export const getMyResumes = async () => {
             Authorization: `Bearer ${accessToken}`,
         },
     });
-
-    const myResumes = response.data.filter((resume: any) => resume.user_id.toString() === userId);
+    const myResumes = response.data.filter((resume: any) => resume.user_id === userId);
 
     return myResumes;
 };

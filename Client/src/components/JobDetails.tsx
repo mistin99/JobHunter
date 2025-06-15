@@ -25,8 +25,8 @@ export default function JobDetails({ job, organizationName }: JobDetailsProps) {
     const fetchMyResume = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const userId = Number(localStorage.getItem('User_id'));
-        if (!token || !userId) return;
+        const user_json = localStorage.getItem('User');
+        if (!token || !user_json) return;
 
         const resumels = await getMyResumes();
         const myResume = resumels[0];
@@ -34,7 +34,7 @@ export default function JobDetails({ job, organizationName }: JobDetailsProps) {
         if (myResume) {
           setResumeId(myResume.id);
         } else {
-          console.warn('Няма намерено резюме за потребител', userId);
+          console.warn('Няма намерено резюме за потребител', user);
         }
       } catch (error) {
         console.error('Грешка при извличане на автобиографии:', error);
