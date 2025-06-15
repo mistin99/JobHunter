@@ -15,11 +15,6 @@ interface JobDetailsProps {
   organizationName?: string;
 }
 
-interface Resume {
-  id: number;
-  user_id: number;
-  // други полета при нужда
-}
 
 export default function JobDetails({ job, organizationName }: JobDetailsProps) {
   const navigate = useNavigate();
@@ -35,7 +30,6 @@ export default function JobDetails({ job, organizationName }: JobDetailsProps) {
 
         const resumels = await getMyResumes();
         const myResume = resumels[0];
-        console.log(myResume);
 
         if (myResume) {
           setResumeId(myResume.id);

@@ -39,10 +39,11 @@ export default function JobDetailsPage() {
     const fetchData = async () => {
       try {
         if (!jobId) return;
-
+        console.log(jobId)
         const jobResponse = await GetJobOfferById(Number(jobId));
+        console.log(jobResponse)
         const jobData = Array.isArray(jobResponse.data)
-          ? jobResponse.data[0]
+          ? jobResponse.data.find((job: Job) => job.id === Number(jobId))
           : jobResponse.data;
         setJob(jobData);
 
@@ -51,7 +52,6 @@ export default function JobDetailsPage() {
           ? orgResponse.data[0]
           : orgResponse.data;
 
-        console.log('Използвана организация:', orgData);
         setOrganization(orgData);
       } catch (error) {
         console.error('Грешка при зареждане на обява или организация:', error);
@@ -61,17 +61,6 @@ export default function JobDetailsPage() {
     fetchData();
   }, [jobId]);
 
-  const onJobSelect = (selectedJob: Job) => {
-    navigate(`/jobs/${selectedJob.id}`);
-  };
-
-  const organizationsMap = organization
-    ? { [organization.id]: organization.name }
-    : {};
-
-  if (job) {
-    console.log("Предаване към JobList:", job, organizationsMap);
-  }
 
   return (
     <Box sx={{ width: '100%', minWidth: '100vw' }}>

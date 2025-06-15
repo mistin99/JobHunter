@@ -91,7 +91,6 @@ const OrganizationDetailsPage: React.FC = () => {
 
         try {
             const response = await CreateJobOffer(newJobOffer);
-            console.log("Създадена обява за работа:", response.data);
 
             const offersResponse = await GetOrganizationJobOffers(organization.id);
             setJobOffers(offersResponse.data ?? []);

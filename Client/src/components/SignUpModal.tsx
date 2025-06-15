@@ -29,7 +29,6 @@ const SignUpModal: React.FC<SignUpModalProps> = ({ open, onClose, onSwitchToSign
             onSwitchToSignIn();
         } catch (error) {
             alert('Регистрацията не беше успешна.');
-            console.error(error);
         }
     };
 

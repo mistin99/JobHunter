@@ -19,7 +19,6 @@ const Authentication: React.FC<AuthenticationProps> = ({ open, onClose, onSignIn
             onSignInSuccess(accessToken);
         } catch (error) {
             alert('Входът не бе успешен. Моля, опитайте отново.');
-            console.error(error);
         }
     };
 

@@ -89,7 +89,6 @@ const ProfilePage: React.FC = () => {
     try {
       const response = await createOrg(OrganizationData);
 
-      console.log('Организацията е създадена:', response.data);
 
       const orgId = response.data.organization?.id ?? null;
 
@@ -105,12 +104,9 @@ const ProfilePage: React.FC = () => {
       console.error('Грешка при създаване на организация:', error.response?.status, error.response?.data || error.message);
 
       try {
-        console.log("Обновяване на токена...");
         await refresh();
 
         const retryResponse = await createOrg(OrganizationData);
-
-        console.log('Организацията е създадена след обновяване на токена:', retryResponse.data);
 
         const orgId = retryResponse.data.organization?.id ?? null;
 
@@ -142,7 +138,6 @@ const ProfilePage: React.FC = () => {
 
       const response = await uploadResume(formData);
 
-      console.log('Автобиографията е качена:', response.data);
       alert('Автобиографията беше успешно качена!');
     } catch (error: any) {
       console.error('Грешка при качване:', error);

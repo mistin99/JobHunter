@@ -17,7 +17,6 @@ export const signUp = async (data: SignUpData) => {
   return axios.post('http://127.0.0.1:8000/auth/signup', data);
 };
 export const signIn = async (data: SignInData) => {
-  console.log(data)
   const response = await axios.post('http://127.0.0.1:8000/auth/signin',  data , {
     withCredentials: true
   });
