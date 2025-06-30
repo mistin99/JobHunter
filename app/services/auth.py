@@ -36,7 +36,9 @@ class AuthService:
         entity = cast(
             User, self.db.query(User).filter(User.email == user.email).first()
         )
-        if not (entity and entity.password == user.password):
+        if not (
+            entity and entity.password == user.password and entity.status == "Approved"
+        ):
             raise LookupError("Invalid user credentials")
         return (
             self._create_token(entity.id, TokenType.ACCESS),
