@@ -57,6 +57,7 @@ class AuthService:
             raise RuntimeError("Account couldn't be verified!")
         entity = cast(User, entity)
         entity.status = status
+        self.db.commit()
         return UserDto.model_validate(entity)
 
     @classmethod
